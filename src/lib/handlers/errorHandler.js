@@ -1,5 +1,6 @@
 import { errors } from "shared";
 import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server"; // <-- Importar NextResponse
 
 const {
   CredentialsError,
@@ -12,7 +13,9 @@ const {
 } = errors;
 const { JsonWebTokenError, TokenExpiredError } = jwt;
 
-export const errorHandler = (error, req, res) => {
+export const errorHandler = (error) => {
+  // <-- Ya no recibe 'req' y 'res' directamente, sino solo el 'error'
+
   console.error(error); // Logueo del error
 
   let status = 500;
@@ -46,5 +49,6 @@ export const errorHandler = (error, req, res) => {
   }
 
   //Enviamos la respuesta con el error adecuado
-  return res.json({ error: errorName, message }, { status });
+  return NextResponse.json({ error: errorName, message }, { status });
 };
+// <-- Ahora devuelve un NextResponse.json con el error y el mensaje
