@@ -16,12 +16,14 @@ const { JsonWebTokenError, TokenExpiredError } = jwt;
 export const errorHandler = (error) => {
   // <-- Ya no recibe 'req' y 'res' directamente, sino solo el 'error'
 
-  console.error(error); // Logueo del error
+  console.error(
+    `[Error] ${error.name}: ${error.message}`,
+    error.details || error.stack
+  );
 
   let status = 500;
   let errorName = SystemError.name;
   let { message } = error;
-
   // Manejamos los diferentes tipos de errores según el tipo
   if (error instanceof DuplicityError) {
     status = 409;
@@ -48,7 +50,12 @@ export const errorHandler = (error) => {
     message = "invalid JWT";
   }
 
+  const errorResponse = {
+    error: errorName,
+    message,
+    ...(error.details && { details: error.details }), // Agrega detalles si existen
+  };
   //Enviamos la respuesta con el error adecuado
-  return NextResponse.json({ error: errorName, message }, { status });
+  return NextResponse.json(errorResponse, { status });
 };
 // <-- Ahora devuelve un NextResponse.json con el error y el mensaje

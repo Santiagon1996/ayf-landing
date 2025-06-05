@@ -13,6 +13,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "El nombre es obligatorio"],
       trim: true,
+      lowercase: true,
       match: [NAME_REGEX, "Por favor, usa un formato de nombre válido"],
     },
     email: {

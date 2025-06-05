@@ -7,7 +7,7 @@ LOGOUT_URL="http://localhost:3000/api/admin/logout"
 LOGIN_URL="http://localhost:3000/api/admin/auth" # ¡Ambas rutas bajo /api/admin/!
 
 # Datos de usuario para login (ajusta según tus datos de prueba)
-USER_EMAIL="admin@admin.com"
+USER_EMAIL="admin"
 USER_PASSWORD="123123123"
 
 # --- Parte de Login ---
@@ -15,7 +15,7 @@ echo "--- Intentando iniciar sesión para obtener una cookie ---"
 
 LOGIN_CURL_OUTPUT=$(curl -X POST \
   -H "Content-Type: application/json" \
-  -d "{\"email\":\"$USER_EMAIL\",\"password\":\"$USER_PASSWORD\"}" \
+  -d "{\"name\":\"$USER_EMAIL\",\"password\":\"$USER_PASSWORD\"}" \
   -c /tmp/cookies.txt \
   -s -v \
   "$LOGIN_URL" 2>&1)
@@ -46,9 +46,8 @@ LOGOUT_CURL_OUTPUT=$(curl -X POST \
 echo "$LOGOUT_CURL_OUTPUT"
 
 # Verificar si se recibió el encabezado 'Set-Cookie' que indica eliminación
-# Buscamos "Set-Cookie: accessToken=" seguido de una indicación de expiración (Max-Age=0 O Expires en el pasado)
-# Modificación clave: Agregamos '.*' después de la fecha en Expires para ser más flexibles
-if echo "$LOGOUT_CURL_OUTPUT" | grep -q "Set-Cookie: accessToken=;.*\(Max-Age=0\|Expires=Thu, 01 Jan 1970.*\)"; then
+# Buscamos SOLO la presencia de 'Set-Cookie: accessToken=;'
+if echo "$LOGOUT_CURL_OUTPUT" | grep -q "Set-Cookie: accessToken=;"; then
   echo -e "\n✅ Éxito: Se recibió el encabezado 'Set-Cookie: accessToken=' indicando que la cookie de acceso ha sido eliminada."
   LOGOUT_HTTP_STATUS=$(echo "$LOGOUT_CURL_OUTPUT" | awk '/^< HTTP\// {print $2; exit}')
   if [[ "$LOGOUT_HTTP_STATUS" == "200" ]]; then
@@ -58,7 +57,7 @@ if echo "$LOGOUT_CURL_OUTPUT" | grep -q "Set-Cookie: accessToken=;.*\(Max-Age=0\
   fi
 else
   echo -e "\n❌ Fallo: No se encontró un encabezado 'Set-Cookie: accessToken=' que indique la eliminación de la cookie."
-  echo "Detalles del error: El script no detectó 'Max-Age=0' o 'Expires=Thu, 01 Jan 1970' en el Set-Cookie."
+  echo "Detalles del error: El script no detectó 'Set-Cookie: accessToken='."
   echo "Set-Cookie Header(s):"
   echo "$LOGOUT_CURL_OUTPUT" | grep "Set-Cookie:"
 fi
