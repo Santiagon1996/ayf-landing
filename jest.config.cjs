@@ -1,5 +1,5 @@
-// jest.config.js (¡Este es el contenido correcto!)
-const nextJest = require("next/jest"); // <-- Usar require()
+// jest.config.cjs
+const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({
   dir: "./", // Esto debe apuntar a la raíz de tu proyecto Next.js
@@ -9,21 +9,23 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   // Add more setup options before each test is run
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"], // <-- Verifica esta ruta
-  testEnvironment: "node", // Usa jsdom para emular el navegador
+  testEnvironment: "node", // Considera 'jsdom' si testeas componentes React o cosas del navegador.
+                           // 'node' es para tests de backend o utilidades.
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1", // Ajusta si tus alias de rutas son diferentes
+    // Puedes añadir aquí el mock para 'next/headers' si no está en un archivo de setup global
+    // 'next/headers': '<rootDir>/__mocks__/next/headers.js',
   },
-  // Esto es crucial para Babel y la transformación de archivos JS/JSX/TS/TSX/MJS
+  // --- CAMBIO CLAVE AQUÍ: Usar @swc/jest para la transformación ---
   transform: {
-    // Asegúrate de que el path a babel.config.js sea correcto
-    // Si babel.config.js está en la raíz, './babel.config.js' es correcto
-    "^.+\\.(js|jsx|ts|tsx|mjs)$": [
-      "babel-jest",
-      { configFile: "./babel.config.cjs" },
-    ],
+    // Le dice a Jest que use @swc/jest para todos los archivos .js, .jsx, .ts, .tsx
+    // Si necesitas .mjs, también puedes añadirlo aquí: '^.+\\.(t|j)sx?|mjs)$'
+    '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
+  // --- Fin del cambio clave ---
+
   transformIgnorePatterns: [
-    "/node_modules/(?!next-auth|@babel|lodash-es)", // Permite la transformación de estos módulos si es necesario
+    "/node_modules/(?!next-auth|@babel|lodash-es)", // '@babel' ya no sería necesario si no usas babel-jest
     "^.+\\.module\\.(css|sass|scss)$",
   ],
   testPathIgnorePatterns: [
@@ -33,6 +35,4 @@ const customJestConfig = {
   ],
 };
 
-// createJestConfig es una función que devuelve un objeto de configuración de Jest
-// que ha sido extendido con la configuración específica de Next.js.
-module.exports = createJestConfig(customJestConfig); // <-- Usar module.exports
+module.exports = createJestConfig(customJestConfig);

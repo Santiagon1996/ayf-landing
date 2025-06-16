@@ -5,7 +5,8 @@ const { SystemError } = errors;
 
 export const logoutUser = async () => {
   try {
-    await cookies().delete("accessToken"); // Operación de eliminación de cookie
+    const cookieStore = await cookies();
+    cookieStore.delete("accessToken"); // Operación de eliminación de cookie
     // Opcional: Si tienes un refresh token, también deberías eliminarlo aquí
     // cookies().delete('refreshToken');
 

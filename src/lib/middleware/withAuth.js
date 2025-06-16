@@ -5,8 +5,6 @@ import { errors } from "shared";
 
 const { AuthorizationError, SystemError } = errors;
 
-const { JWT_SECRET } = process.env;
-
 /**
  * Función de Orden Superior (HOF) para proteger rutas de API en Next.js App Router.
  * - Verifica la autenticación (validez del accessToken de la cookie).
@@ -20,6 +18,16 @@ const { JWT_SECRET } = process.env;
 
 export const withAuth = (handler) => {
   return async (req) => {
+    const { JWT_SECRET } = process.env;
+
+    if (!JWT_SECRET) {
+      console.error("Error de configuración: JWT_SECRET no está definido.");
+      return NextResponse.json(
+        { message: "Internal server error: Server configuration missing." },
+        { status: 500 }
+      );
+    }
+
     try {
       // Obtener las cookies de la solicitud
       const accessToken = (await cookies()).get("accessToken")?.value;

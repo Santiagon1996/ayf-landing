@@ -19,7 +19,8 @@ export async function POST(req, params) {
     const token = createToken(user.id, user.role);
 
     // 4. Establecer la cookie HttpOnly y Secure en la respuesta
-    await cookies().set("accessToken", token, {
+    const cookieStore = await cookies(); // Obtener el objeto de cookies
+    cookieStore.set("accessToken", token, {
       httpOnly: true, // No accesible por JavaScript del cliente
       secure: process.env.NODE_ENV === "production", // Solo sobre HTTPS en producción
       sameSite: "lax", // Protección CSRF (considera 'strict' si es posible)

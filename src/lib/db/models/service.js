@@ -1,34 +1,30 @@
 import mongoose from "mongoose";
+import { slugify } from "../../utils/slugify.js";
 
 const { Schema, model, models } = mongoose;
-// Blog schema definition
+
 const serviceSchema = new Schema(
   {
     name: {
       type: String,
       required: [true, "El nombre del servicio es obligatorio"],
       trim: true,
-      unique: true, // Asegura que no haya dos servicios con el mismo nombre exacto
+      unique: true,
     },
     slug: {
-      // Para URLs amigables (ej. /servicios/derecho-societario)
       type: String,
       unique: true,
       lowercase: true,
       trim: true,
     },
-    // Campo para diferenciar el tipo principal: jurídico o contable
-    // Esto lo usarás para el filtro principal de navegación (ej. /servicios/juridicos)
     type: {
       type: String,
-      enum: ["juridico", "contable"], // Tipos principales de servicio
+      enum: ["juridico", "contable"],
       required: [
         true,
         "El tipo de servicio (jurídico/contable) es obligatorio",
       ],
     },
-    // Campo para la categoría/área más general (ej. Asesoría Jurídica, Área Financiera)
-    // Esto puede ayudar a agrupar servicios relacionados en el frontend
     category: {
       type: String,
       enum: [
@@ -39,32 +35,44 @@ const serviceSchema = new Schema(
       ],
       required: [true, "La categoría del servicio es obligatoria"],
     },
-    description: {
+    shortDescription: {
       type: String,
       required: [true, "La descripción breve del servicio es obligatoria"],
+      maxlength: [
+        300,
+        "La descripción breve no puede exceder los 300 caracteres",
+      ],
+      trim: true,
     },
-    // Sub-servicios o puntos clave que abarca este servicio
-    // Puedes listar aquí los detalles específicos (ej. "Asesoramiento tipo de sociedad", "Redacción de actas")
-    details: [String], // Array de strings para listar los detalles/alcances específicos
+    fullDescription: {
+      type: String,
+      required: [true, "La descripción completa del servicio es obligatoria"],
+    },
+    details: [String],
 
-    image: String, // URL de la imagen principal del servicio (opcional)
-    priceInfo: String, // Información sobre precios, si aplica (ej. "Costo aparte", "Presupuesto personalizado")
+    iconUrl: {
+      type: String,
+      trim: true,
+      default: "https://via.placeholder.com/64x64?text=Icon",
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
-// Middleware para generar el slug automáticamente a partir del nombre
-serviceSchema.pre("save", function (next) {
-  if (this.isModified("name") && this.name) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/ /g, "-") // Reemplaza espacios por guiones
-      .replace(/[^\w-]+/g, ""); // Elimina caracteres no alfanuméricos (excepto guiones)
+serviceSchema.pre("validate", function (next) {
+  if (this.isNew || this.isModified("name")) {
+    // isNew cubre la primera creación
+    if (this.name && !this.slug) {
+      this.slug = slugify(this.name);
+    }
+    // Opcional: si el nombre se modifica y ya hay un slug, puedes decidir si actualizarlo o no.
+    // Por ahora, solo si no hay slug, lo genera.
   }
   next();
 });
 
 // Middleware para actualizar la fecha de actualización para findOneAndUpdate
+// Este hook ya lo tienes y es útil si haces actualizaciones directas con findOneAndUpdate
 serviceSchema.pre("findOneAndUpdate", function (next) {
   this.set({ updatedAt: new Date() });
   next();

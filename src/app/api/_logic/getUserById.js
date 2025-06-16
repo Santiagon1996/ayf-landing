@@ -3,7 +3,7 @@ import { errors, validate } from "shared";
 
 const { AuthorizationError, SystemError } = errors;
 
-const { validateUserId } = validate;
+const { validateId } = validate;
 
 export const getUserById = async (userId) => {
   if (!userId) {
@@ -11,7 +11,7 @@ export const getUserById = async (userId) => {
   }
 
   // Validar el ID del usuario
-  validateUserId(userId);
+  validateId(userId);
 
   let user;
   try {
