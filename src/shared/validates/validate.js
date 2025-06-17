@@ -1,93 +1,276 @@
+import { z } from "zod";
 import { constant } from "../constants/constants.js";
-import { ValidateError } from "../errors/errors.js";
+import error from "../errors/errors.js";
 
-export const validate = {
-  string(string, explain = "string") {
-    if (typeof string !== "string")
-      throw new ValidateError(`Invalid ${explain} ${string}`);
-  },
-  number(number, options = {}, explain = "number") {
-    if (typeof number !== "number" || isNaN(number))
-      throw new ValidateError(`Invalid ${explain}: ${number}`);
-    if (options.min !== undefined && number < options.min)
-      throw new ValidateError(
-        `Invalid ${explain} (minimum ${options.min}): ${number}`
-      );
-    if (options.max !== undefined && number > options.max)
-      throw new ValidateError(
-        `Invalid ${explain} (maximum ${options.max}): ${number}`
-      );
-  },
+const { ValidateError, SystemError } = error;
 
-  text(text, options = {}, explain = "text") {
-    this.string(text, explain);
-    if (constant.EMPTY_OR_BLANK_REGEX.test(text))
-      throw new ValidateError(`Invalid ${explain}: ${text}`);
-    if (options.minLength !== undefined && text.length < options.minLength)
-      throw new ValidateError(
-        `Invalid ${explain} (minimum length ${options.minLength}): ${text}`
-      );
-    if (options.maxLength !== undefined && text.length > options.maxLength)
-      throw new ValidateError(
-        `Invalid ${explain} (maximum length ${options.maxLength}): ${text}`
-      );
-    if (options.allowedValues && !options.allowedValues.includes(text))
-      throw new ValidateError(
-        `Invalid ${explain} (allowed values: ${options.allowedValues.join(
-          ", "
-        )}): ${text}`
-      );
-  },
-  maxLength(value, maxLength, explain) {
-    if (value && value.length > maxLength)
-      // Añadida verificación de null/undefined
-      throw new ValidateError(
-        `Invalid ${explain} (maximum length ${maxLength}): ${value}`
-      );
-  },
-  minLength(value, minLength, explain) {
-    if (value && value.length < minLength)
-      // Añadida verificación de null/undefined
-      throw new ValidateError(
-        `Invalid ${explain} (minimum length ${minLength}): ${value}`
-      );
-  },
-  name(value, explain = "name") {
-    this.text(value, { minLength: 3, maxLength: 50 }, explain);
-    if (!constant.NAME_REGEX.test(value))
-      throw new ValidateError(`Invalid ${explain}: ${value}`);
-  },
-  username(username, explain = "username") {
-    this.text(username, explain), this.minLength(username, 3, explain);
-    this.maxLength(username, 20, explain);
-  },
-  password(password, explain = "password") {
-    this.text(password, explain), this.minLength(password, 5, explain);
-    this.maxLength(password, 20, explain);
-  },
-  email(email, explain = "email") {
-    this.string(email, explain);
-    if (!constant.EMAIL_REGEX.test(email))
-      throw new ValidateError(`Invalid ${explain} ${email}`);
-    this.maxLength(email, 30, explain);
-  },
-  url(value, fieldName) {
-    const urlRegex = /^https?:\/\/[^\s$.?#].[^\s]*$/;
-    if (Array.isArray(value)) {
-      value.forEach((url) => {
-        this.string(url, `URL in ${fieldName}`);
-        if (!urlRegex.test(url)) {
-          throw new ValidateError(`Invalid URL in ${fieldName}: ${url}`);
-        }
-      });
-    } else {
-      this.string(value, `URL in ${fieldName}`);
-      if (!urlRegex.test(value)) {
-        throw new ValidateError(`Invalid URL in ${fieldName}: ${value}`);
-      }
+// --- User Schema Definition ---
+const userRegisterSchema = z.object({
+  name: z
+    .string()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre no puede superar los 50 caracteres")
+    .regex(
+      constant.NAME_REGEX,
+      "El nombre solo puede contener letras y espacios"
+    ),
+
+  email: z
+    .string()
+    .email("Email inválido")
+    .max(50, "El email no puede superar los 50 caracteres")
+    .regex(constant.EMAIL_REGEX, "El email debe ser válido"),
+
+  password: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .max(50, "La contraseña no puede superar los 50 caracteres"),
+});
+// --- User Login Schema Definition ---
+const userLoginSchema = z.object({
+  name: z
+    .string()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre no puede superar los 50 caracteres")
+    .regex(constant.NAME_REGEX, "El nombre debe ser válido"),
+
+  password: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .max(50, "La contraseña no puede superar los 50 caracteres"),
+});
+// --- User ID Schema Definition ---
+const idSchema = z.object({
+  userId: z
+    .string()
+    .min(24, "El ID de usuario debe tener 24 caracteres")
+    .max(24, "El ID de usuario no puede superar los 24 caracteres")
+    .regex(constant.ID_REGEX, "El ID de usuario debe ser un ID válido"),
+});
+// --- Service Schema Definition ---
+const serviceSchema = z.object({
+  name: z
+    .string()
+    .min(3, "El nombre del servicio debe tener al menos 3 caracteres")
+    .max(100, "El nombre no puede exceder los 100 caracteres"), // Ajusta el max si es diferente
+  slug: z
+    .string()
+    .regex(
+      /^[a-z0-9-]+$/,
+      "El slug debe ser URL-friendly (solo letras, números y guiones)"
+    )
+    .min(3, "El slug debe tener al menos 3 caracteres")
+    .optional(), // <-- ¡IMPORTANTE! El slug es opcional en Zod si Mongoose lo auto-genera
+  type: z.enum(["juridico", "contable"], {
+    errorMap: () => ({
+      message:
+        "El tipo de servicio (jurídico/contable) es obligatorio y debe ser 'juridico' o 'contable'",
+    }),
+  }),
+  category: z.enum(
+    [
+      "asesoria-juridica",
+      "area-contable-fiscal",
+      "area-financiera",
+      "servicios-complementarios",
+    ],
+    {
+      errorMap: () => ({
+        message:
+          "La categoría del servicio es obligatoria y debe ser una de las predefinidas",
+      }),
     }
-  },
-  id(id, explain = "id") {
-    this.text(id, { minLength: 1, maxLength: 25 }, explain); // Asegurando que no esté vacío
-  },
+  ),
+  shortDescription: z
+    .string()
+    .min(1, "La descripción breve del servicio es obligatoria")
+    .max(300, "La descripción breve no puede exceder los 300 caracteres"), // <-- ¡Mismo mensaje que en el test!
+  fullDescription: z
+    .string()
+    .min(1, "La descripción completa del servicio es obligatoria"),
+  details: z.array(
+    z.string().min(1, "Cada detalle debe ser una cadena no vacía")
+  ),
+  iconUrl: z
+    .string()
+    .url("URL de icono inválida")
+    .optional()
+    .default("https://via.placeholder.com/64x64?text=Icon"),
+});
+export const updateServiceSchema = serviceSchema.partial();
+
+// --- Blog Schema Definition ---
+export const blogSchema = z.object({
+  title: z
+    .string({
+      required_error: "El título de la novedad es obligatorio",
+      invalid_type_error: "El título debe ser una cadena de texto.",
+    })
+
+    .min(5, "El título debe tener al menos 5 caracteres.")
+    .max(200, "El título no puede exceder los 200 caracteres."),
+
+  category: z
+    .enum(["juridico", "contable", "fiscal", "laboral", "noticias-generales"], {
+      required_error: "La categoría es obligatoria.",
+      invalid_type_error: 'La categoría "{VALUE}" no es válida.',
+    })
+    .transform((val) => val.toLowerCase()),
+
+  slug: z
+    .string({
+      invalid_type_error: "El slug debe ser una cadena de texto.",
+    })
+    .toLowerCase()
+    .min(1, "El slug no puede estar vacío si se proporciona.")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "El slug debe ser una URL amigable (letras, números y guiones)."
+    )
+    .optional(),
+
+  description: z
+    .string({
+      invalid_type_error: "La descripción debe ser una cadena de texto.",
+    })
+    .max(500, "La descripción no puede exceder los 500 caracteres")
+    .optional(),
+
+  content: z
+    .string({
+      required_error: "El contenido de la novedad es obligatorio",
+      invalid_type_error: "El contenido debe ser una cadena de texto.",
+    })
+    .min(20, "El contenido debe tener al menos 20 caracteres."),
+
+  author: z
+    .string({
+      required_error: "El autor es obligatorio.",
+      invalid_type_error: "El autor debe ser una cadena de texto.",
+    })
+    .min(3, "El autor debe tener al menos 3 caracteres.")
+    .default("Estudio Jurídico/Contable"),
+
+  publishedAt: z
+    .preprocess(
+      (arg) => {
+        if (
+          typeof arg === "string" ||
+          typeof arg === "number" ||
+          arg instanceof Date
+        ) {
+          return new Date(arg);
+        }
+        return arg;
+      },
+      z.date({
+        required_error: "La fecha de publicación es obligatoria.",
+        invalid_type_error: "La fecha de publicación no es una fecha válida.",
+      })
+    )
+    .default(() => new Date()), // Use a function for default date in Zod
+
+  isPublished: z.boolean().default(false),
+
+  iconUrl: z
+    .string()
+    .url("URL de icono inválida")
+    .default("https://via.placeholder.com/1200x600?text=Blog+Image"),
+
+  viewsCount: z.number().int().min(0).default(0),
+});
+
+export const updateBlogSchema = blogSchema.partial();
+
+// --- Validation Function ---
+const validateService = (data) => {
+  try {
+    const parseData = serviceSchema.parse(data);
+    return parseData;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const details = error.errors.map((e) => ({
+        field: e.path.join("."),
+        message: e.message,
+      }));
+      throw new ValidateError("Validation failed for service data", details);
+    }
+    throw new SystemError(
+      "Unexpected error during service validation",
+      error.message
+    );
+  }
 };
+const validateUserRegister = (data) => {
+  try {
+    userRegisterSchema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const details = error.errors.map((e) => ({
+        field: e.path.join("."),
+        message: e.message,
+      }));
+      throw new ValidateError(
+        "Validation failed for user registration",
+        details
+      );
+    }
+    throw new SystemError("Unexpected error during validation", error.message);
+  }
+};
+const validateUserLogin = (data) => {
+  try {
+    userLoginSchema.parse(data);
+  } catch (error) {
+    const detailedErrors = error.errors.map((e) => ({
+      field: e.path.join("."),
+      message: e.message,
+    }));
+    throw new ValidateError("Validation failed for user login", detailedErrors);
+  }
+};
+const validateId = (data) => {
+  try {
+    idSchema.parse({ userId: data });
+  } catch (error) {
+    const detailedErrors = error.errors.map((e) => ({
+      field: e.path.join("."),
+      message: e.message,
+    }));
+    throw new ValidateError("Validation failed for user ID", detailedErrors);
+  }
+};
+export const validateBlog = (data) => {
+  try {
+    return blogSchema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const details = error.errors.map((e) => ({
+        field: e.path.join("."),
+        message: e.message,
+      }));
+      throw new ValidateError("Validation failed for blog post data", details);
+    }
+    throw new SystemError(
+      "Unexpected error during blog post validation",
+      error.message
+    );
+  }
+};
+
+const validate = {
+  userRegisterSchema,
+  userLoginSchema,
+  idSchema,
+  serviceSchema,
+  updateServiceSchema,
+  blogSchema,
+  updateBlogSchema,
+  validateService,
+  validateUserRegister,
+  validateUserLogin,
+  validateId,
+  validateBlog,
+};
+
+export { validate };

@@ -1,5 +1,6 @@
 import { errors } from "shared";
 import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server"; // <-- Importar NextResponse
 
 const {
   CredentialsError,
@@ -12,13 +13,17 @@ const {
 } = errors;
 const { JsonWebTokenError, TokenExpiredError } = jwt;
 
-export const errorHandler = (error, req, res) => {
-  console.error(error); // Logueo del error
+export const errorHandler = (error) => {
+  // <-- Ya no recibe 'req' y 'res' directamente, sino solo el 'error'
+
+  console.error(
+    `[Error] ${error.name}: ${error.message}`,
+    error.details || error.stack
+  );
 
   let status = 500;
   let errorName = SystemError.name;
   let { message } = error;
-
   // Manejamos los diferentes tipos de errores según el tipo
   if (error instanceof DuplicityError) {
     status = 409;
@@ -45,6 +50,12 @@ export const errorHandler = (error, req, res) => {
     message = "invalid JWT";
   }
 
+  const errorResponse = {
+    error: errorName,
+    message,
+    ...(error.details && { details: error.details }), // Agrega detalles si existen
+  };
   //Enviamos la respuesta con el error adecuado
-  return res.json({ error: errorName, message }, { status });
+  return NextResponse.json(errorResponse, { status });
 };
+// <-- Ahora devuelve un NextResponse.json con el error y el mensaje

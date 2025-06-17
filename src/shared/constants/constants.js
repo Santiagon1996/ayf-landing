@@ -6,6 +6,10 @@ export const constant = {
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/, //==> regex para las URL
   // USERNAME_REGEX: /^[a-zA-Z0-9]+$/,
   NAME_REGEX: /^[A-Za-z]+(?: [A-Za-z]+)*$/, //==> regex para los nombres
+  ID_REGEX: /^[a-fA-F0-9]{24}$/, //==> regex para los ID's de MongoDB
+
+  PASSWORD_MIN_LENGTH: 8,
+  PASSWORD_MAX_LENGTH: 20,
   ICON_LEGAL: "legal",
   ICON_ACCOUNTING: "accounting",
   ICON_NEWS: "news",
