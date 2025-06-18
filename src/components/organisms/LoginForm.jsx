@@ -6,21 +6,20 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
-import { useRegisterUser } from "@/hooks/useRegisterUser";
+import { useLoginUser } from "@/hooks/useLoginUser";
 import { isUserLoggedIn } from "@/lib/utils/isUserLoggedIn";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-export const RegisterForm = () => {
-  const { registerUser, error, loading, success, validationErrors } =
-    useRegisterUser();
+export const LoginForm = () => {
+  const { loginUser, error, loading, success, validationErrors } =
+    useLoginUser();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -62,18 +61,18 @@ export const RegisterForm = () => {
     }
 
     // Attempt to register the user via the hook
-    const isSuccess = await registerUser(formData);
+    const isSuccess = await loginUser(formData);
 
     if (isSuccess) {
       Swal.fire({
         icon: "success",
         title: "¡Éxito!",
-        text: "Usuario registrado correctamente.",
+        text: "Bienvenido",
         confirmButtonText: "OK",
       }).then(() => {
-        router.push("/login"); // Redirect after user acknowledges success
+        router.push("/dashboard"); // Redirect after user acknowledges success
       });
-      setFormData({ name: "", email: "", password: "", confirmPassword: "" }); // Clear form on success
+      setFormData({ name: "", password: "", confirmPassword: "" }); // Clear form on success
     } else {
       // Handle general errors (network, duplication, system errors) from the hook
       // Field-specific validation errors are handled by validationErrors state
@@ -81,7 +80,7 @@ export const RegisterForm = () => {
         // The 'error' state from useRegisterUser
         Swal.fire({
           icon: "error",
-          title: "¡Error en el Registro!", // General error title
+          title: "¡Error en el login", // General error title
           text: error, // Display the error message from the hook
           confirmButtonText: "OK",
         });
@@ -94,9 +93,7 @@ export const RegisterForm = () => {
       onSubmit={handleSubmit}
       className="space-y-6 max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg"
     >
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Registro de Usuario
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Login de Usuario</h2>
 
       {/* Name Field */}
       <div className="grid w-full items-center gap-1.5">
@@ -116,27 +113,6 @@ export const RegisterForm = () => {
         />
         {validationErrors.name && (
           <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>
-        )}
-      </div>
-
-      {/* Email Field */}
-      <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          disabled={loading}
-          className={
-            validationErrors.email
-              ? "border-red-500 focus-visible:ring-red-500"
-              : ""
-          }
-        />
-        {validationErrors.email && (
-          <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>
         )}
       </div>
 
@@ -184,15 +160,15 @@ export const RegisterForm = () => {
 
       {/* Link to Login page */}
       <p className="text-center text-sm text-gray-600">
-        ¿Ya tienes cuenta?{" "}
-        <Link href="/login" className="text-blue-600 hover:underline">
-          Inicia sesión aquí
+        ¿No tienes cuenta?{" "}
+        <Link href="/register" className="text-blue-600 hover:underline">
+          Registrate
         </Link>
       </p>
 
       {/* Submit Button */}
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Registrando..." : "Registrarse"}
+        {loading ? "Autenticando..." : "Autenticarse"}
       </Button>
     </form>
   );

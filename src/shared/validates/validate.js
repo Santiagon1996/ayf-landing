@@ -23,7 +23,7 @@ const userRegisterSchema = z.object({
 
   password: z
     .string()
-    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(50, "La contraseña no puede superar los 50 caracteres"),
 });
 // --- User Login Schema Definition ---
@@ -36,7 +36,7 @@ const userLoginSchema = z.object({
 
   password: z
     .string()
-    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(50, "La contraseña no puede superar los 50 caracteres"),
 });
 // --- User ID Schema Definition ---
