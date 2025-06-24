@@ -4,21 +4,6 @@ import { withErrorHandler } from "@/lib/handlers/withErrorHandler.js";
 import { updateService, deleteService } from "../../_logic/index.js";
 import { NextResponse } from "next/server";
 
-// export async function GET(req, { params }) {
-//   const res = Response;
-
-//   return await withErrorHandling(async (req, res, params) => {
-//     await connectToDatabase();
-
-//     const { propertyId } = await params;
-
-//     // Lógica para obtener todas las propiedades
-//     const propertie = await getOneProperty(propertyId);
-
-//     // Responder con éxito
-//     return res.json(propertie);
-//   })(req, res, params);
-// }
 export async function PATCH(req, { params }) {
   return await withErrorHandler(
     withAuth(async (req, { userId, userRole }) => {

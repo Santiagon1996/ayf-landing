@@ -232,6 +232,7 @@ const validateUserLogin = (data) => {
 const validateId = (data) => {
   try {
     idSchema.parse({ userId: data });
+    return data;
   } catch (error) {
     const detailedErrors = error.errors.map((e) => ({
       field: e.path.join("."),

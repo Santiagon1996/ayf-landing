@@ -2,19 +2,19 @@ import { errors } from "shared";
 
 const { SystemError } = errors;
 
-export const getServiceRequest = async () => {
+export const getBlogRequest = async () => {
   let response;
   let body;
 
   try {
-    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
+    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
   } catch (error) {
-    throw new SystemError("Error al obtener los servicios", error.message);
+    throw new SystemError("Error al obtener los blogs", error.message);
   }
 
   if (response.status === 200) {
@@ -34,7 +34,7 @@ export const getServiceRequest = async () => {
       body = await response.json();
     } catch (error) {
       throw new SystemError(
-        "Errro al procesar la respuesta de los servicios",
+        "Errro al procesar la respuesta de los blogs",
         error.message
       );
     }

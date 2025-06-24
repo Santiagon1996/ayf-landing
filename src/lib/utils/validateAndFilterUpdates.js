@@ -1,5 +1,5 @@
-import { errors } from "shared"; // Asumo que 'shared' contiene tus errores
-import { z } from "zod"; // Asegúrate de importar Zod si no viene de 'shared' directamente
+import { errors } from "shared";
+import { z } from "zod";
 
 const { ValidateError } = errors;
 
