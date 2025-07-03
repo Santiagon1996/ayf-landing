@@ -10,20 +10,18 @@ import { errors } from "shared";
 import Swal from "sweetalert2";
 
 export const useServices = () => {
-  const [data, setData] = useState([]); // Para almacenar la lista de servicios
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [validationErrors, setValidationErrors] = useState({}); // Para errores de formularios
-
+  const [validationErrors, setValidationErrors] = useState({});
   // Función para obtener todos los servicios
-  // Marcada con useCallback y como dependencia para las otras funciones
-  const fetchServices = useCallback(async () => {
+  const fetchData = useCallback(async (type) => {
     setLoading(true);
     +setError(null);
     try {
-      const result = await getServiceRequest();
-      setData(result);
-      return true;
+      const result = await getServiceRequest(type);
+      setData(result || []);
+      return result;
     } catch (err) {
       console.error("Error fetching services:", err);
       setError(err.message || "Error al cargar los servicios.");
@@ -32,7 +30,6 @@ export const useServices = () => {
       setLoading(false);
     }
   }, []);
-
   // Función para obtener un servicio por ID
   const fetchServiceById = useCallback(async (id) => {
     setLoading(true);
@@ -50,36 +47,40 @@ export const useServices = () => {
   }, []);
 
   // Función para crear un servicio
-  const createService = useCallback(async (serviceData) => {
-    setLoading(true);
-    setError(null);
-    setValidationErrors({});
-    try {
-      const response = await createServiceRequest(serviceData);
-      if (response.success && response.service) {
-        setData((prevData) => [...prevData, response.service]);
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error("Error creating service:", err);
-      setError(err);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Función para actualizar un servicio
-  const updateService = useCallback(
-    async (updatesData, serviceId) => {
+  const createService = useCallback(
+    async (serviceData) => {
       setLoading(true);
       setError(null);
       setValidationErrors({});
       try {
-        await updateServiceRequest(updatesData, serviceId);
-        // Si el backend no devuelve el objeto actualizado, debemos refetch
-        await fetchServices(); // <--- ¡AQUÍ ESTÁ LA CLAVE! Volvemos a cargar todo.
+        await createServiceRequest(serviceData);
+        await fetchData(); // Refresca la lista de servicios después de crear
+        return true;
+      } catch (err) {
+        console.error("Error creating service:", err);
+
+        if (err instanceof errors.ValidateError) {
+          setValidationErrors(err.details || {});
+          setError("Error de validación al crear servicio.");
+        } else {
+          setError(err.message || "Error al crear el servicio.");
+        }
+        return false; // Indica fallo
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchData, setError, setValidationErrors]
+  );
+  // Función para actualizar un servicio
+  const updateService = useCallback(
+    async (serviceId, updatesData) => {
+      setLoading(true);
+      setError(null);
+      setValidationErrors({});
+      try {
+        await updateServiceRequest(serviceId, updatesData);
+        await fetchData();
         return true;
       } catch (err) {
         console.error("Error updating service:", err);
@@ -94,8 +95,8 @@ export const useServices = () => {
         setLoading(false);
       }
     },
-    [fetchServices]
-  ); // Añadir fetchServices a las dependencias porque lo usamos aquí
+    [fetchData, setError, setValidationErrors]
+  );
 
   // Función para eliminar un servicio
   const deleteService = useCallback(
@@ -104,19 +105,20 @@ export const useServices = () => {
       setError(null);
       try {
         await deleteServiceRequest(serviceId);
-        // Si el backend no devuelve el objeto, debemos refetch
-        await fetchServices(); // <--- ¡AQUÍ ESTÁ LA CLAVE! Volvemos a cargar todo.
+        await fetchData();
         return true;
       } catch (err) {
         console.error("Error deleting service:", err);
-        setError(err);
+        setError(
+          err.message || String(err) || "Error al eliminar el servicio."
+        );
         return false;
       } finally {
         setLoading(false);
       }
     },
-    [fetchServices]
-  ); // Añadir fetchServices a las dependencias porque lo usamos aquí
+    [fetchData, setError]
+  );
 
   // Este useEffect es donde se manejan los errores para SweetAlert
   useEffect(() => {
@@ -165,7 +167,7 @@ export const useServices = () => {
     loading,
     error,
     validationErrors,
-    fetchServices,
+    fetchData,
     fetchServiceById,
     createService,
     updateService,

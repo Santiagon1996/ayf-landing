@@ -1,10 +1,13 @@
 import "dotenv/config";
 import { connectToDatabase, disconnectFromDatabase } from "./connection.js";
 import { User } from "./models/index.js";
+import { Service } from "./models/index.js";
+import { services as servicesData } from "./serviceData.js";
 
 async function populateDatabase() {
   // Conectar a la base de datos
   await connectToDatabase();
+  console.log("Conectado a la base de datos.");
 
   // Datos de ejemplo para poblar
   const users = [
@@ -23,43 +26,77 @@ async function populateDatabase() {
   ];
 
   try {
-    // Verificar si la base de datos ya tiene datos
-    const existingCount = await User.countDocuments();
-    if (existingCount > 0) {
+    // --- Poblar Usuarios ---
+    const existingUsersCount = await User.countDocuments();
+    if (existingUsersCount === 0) {
       console.log(
-        "La base de datos ya está poblada. No se insertarán datos duplicados."
+        "No se encontraron usuarios. Insertando usuarios de ejemplo..."
       );
-      await disconnectFromDatabase();
-      return;
+      for (const userData of users) {
+        try {
+          const createdUser = await User.create(userData);
+          console.log(`Usuario ${createdUser.email} creado exitosamente.`);
+        } catch (error) {
+          if (error.code === 11000) {
+            // Duplicado key error
+            console.warn(`Usuario ${userData.email} ya existe. Saltando.`);
+          } else {
+            console.error(
+              `Error creando usuario ${userData.email}:`,
+              error.message
+            );
+          }
+        }
+      }
+    } else {
+      console.log(
+        `Ya existen ${existingUsersCount} usuarios. No se insertarán nuevos usuarios.`
+      );
     }
 
-    // Insertar los datos usando User.create
-    for (const userData of users) {
-      try {
-        const createdUser = await User.create(userData); // Activará middlewares
-        console.log(
-          `Usuario ${createdUser.email} creado exitosamente con ID ${createdUser._id}`
-        );
-      } catch (error) {
-        console.error(
-          `Error creando usuario ${userData.email}:`,
-          error.message
-        );
+    // --- Poblar Servicios ---
+    const existingServicesCount = await Service.countDocuments();
+    if (existingServicesCount === 0) {
+      console.log(
+        "No se encontraron servicios. Insertando servicios de ejemplo..."
+      );
+      for (const serviceData of servicesData) {
+        try {
+          const createdService = await Service.create(serviceData); // Creará el slug automáticamente
+          console.log(`Servicio "${createdService.name}" creado exitosamente.`);
+        } catch (error) {
+          if (error.code === 11000) {
+            // Duplicado key error (name o slug)
+            console.warn(
+              `Servicio "${serviceData.name}" ya existe o su slug es duplicado. Saltando.`
+            );
+          } else {
+            console.error(
+              `Error creando servicio "${serviceData.name}":`,
+              error.message
+            );
+          }
+        }
       }
+    } else {
+      console.log(
+        `Ya existen ${existingServicesCount} servicios. No se insertarán nuevos servicios.`
+      );
     }
+
+    console.log("Población de la base de datos completada.");
   } catch (error) {
     console.error("Error al poblar la base de datos:", error);
   } finally {
     // Desconexión garantizada
     try {
       await disconnectFromDatabase();
-      console.log("Desconectado de la base de datos");
+      console.log("Desconectado de la base de datos.");
     } catch (disconnectError) {
       console.error("Error al desconectar:", disconnectError.message);
     }
+    process.exit(0); // Salida controlada
   }
-
-  process.exit(0); // Salida controlada
 }
 
 populateDatabase();

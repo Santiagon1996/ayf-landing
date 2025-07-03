@@ -3,30 +3,45 @@ import { errors } from "shared";
 
 const { SystemError, NotFoundError } = errors;
 
-export const getServices = async () => {
-  let service;
+/**
+ * Obtiene servicios, opcionalmente filtrados por categoría.
+ * @param {string} [category] - La categoría por la que filtrar los servicios (ej. 'juridico', 'contable').
+ * @returns {Promise<Array>} Una promesa que resuelve con la lista de servicios.
+ * @throws {NotFoundError} Si no se encuentran servicios para la categoría especificada o en general.
+ * @throws {SystemError} Si ocurre un error al obtener los servicios.
+ */
+export const getServices = async (type) => {
+  let services;
+  let query = {}; // Objeto para construir la consulta de Mongoose
+
+  if (type) {
+    // Si se proporciona una categoría, la añadimos al objeto de consulta
+    query.type = type.toLowerCase();
+  }
+
   try {
-    service = await Service.find()
-      .select("-__v")
-      .sort("title") // Ordena alfabéticamente por título
-      .lean();
+    services = await Service.find(query).select("-__v").sort("title").lean();
 
-    console.log("Servicios encontrados:", service.length);
+    console.log(
+      `Servicios encontrados (categoría: ${type || "todos"}):`,
+      services.length
+    );
 
-    service.forEach((service) => {
+    services.forEach((service) => {
       service.id = service._id.toString();
       delete service._id;
     });
 
-    if (service.length === 0) {
-      throw new NotFoundError("No service found");
+    if (services.length === 0) {
+      // Puedes ser más específico aquí si lo deseas:
+      // throw new NotFoundError(category ? `No services found for category: ${category}` : "No services found");
+      throw new NotFoundError("No services found");
     }
-    return service;
+    return services;
   } catch (error) {
-    // Manejo de errores
     if (error instanceof NotFoundError) {
-      throw error; // Lanza el error original
+      throw error;
     }
-    throw new SystemError(`Error fetching service: ${error.message}`);
+    throw new SystemError(`Error fetching services: ${error.message}`);
   }
 };

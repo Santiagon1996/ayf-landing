@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { slugify } from "../../utils/slugify.js";
-
+import { ICON_NAMES } from "../../../components/icons/icons.js";
 const { Schema, model, models } = mongoose;
 
 // BLOG schema definition
@@ -61,8 +61,9 @@ const blogSchema = new Schema(
     },
     iconUrl: {
       type: String,
-      trim: true,
-      default: "https://via.placeholder.com/1200x600?text=Blog+Image",
+      enum: ICON_NAMES, // Asegura que solo se guarden nombres de iconos válidos
+      default: "General", // Establece un icono por defecto de tu lista
+      required: [true, "El icono del servicio es obligatorio"], // Podrías hacerlo requerido si siempre debe tener uno
     },
     viewsCount: {
       type: Number,

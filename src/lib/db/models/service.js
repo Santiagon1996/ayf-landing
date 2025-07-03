@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { slugify } from "../../utils/slugify.js";
+import { ICON_NAMES } from "../../../components/icons/icons.js";
 
 const { Schema, model, models } = mongoose;
 
@@ -52,8 +53,9 @@ const serviceSchema = new Schema(
 
     iconUrl: {
       type: String,
-      trim: true,
-      default: "https://via.placeholder.com/64x64?text=Icon",
+      enum: ICON_NAMES, // Asegura que solo se guarden nombres de iconos válidos
+      default: "General", // Establece un icono por defecto de tu lista
+      required: [true, "El icono del servicio es obligatorio"], // Podrías hacerlo requerido si siempre debe tener uno
     },
   },
   { versionKey: false, timestamps: true }

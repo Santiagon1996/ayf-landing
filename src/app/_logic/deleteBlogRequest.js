@@ -3,21 +3,10 @@ import { validate, errors } from "shared";
 const { SystemError, ValidateError } = errors;
 const { validateId } = validate;
 
-export const deleteBlogRequest = async (adminId, blogId) => {
+export const deleteBlogRequest = async (blogId) => {
   let response;
   let body;
-  let validatedAdminId;
   let validatedBlogId;
-
-  try {
-    validatedAdminId = validateId(adminId);
-  } catch (error) {
-    console.error('"Detalles de la validación fallida:", error.details');
-    if (error instanceof ValidateError) {
-      throw new ValidateError("Validation failed for ", error.details);
-    }
-    throw new SystemError("Validation failed for user ID", error.message);
-  }
 
   try {
     validatedBlogId = validateId(blogId);
@@ -31,7 +20,7 @@ export const deleteBlogRequest = async (adminId, blogId) => {
 
   try {
     response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/blog/${blogId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/blogs/${blogId}`,
       {
         method: "DELETE",
         headers: {

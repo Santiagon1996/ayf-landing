@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { constant } from "../constants/constants.js";
 import error from "../errors/errors.js";
+import { ICON_NAMES } from "../../components/icons/icons.js";
 
 const { ValidateError, SystemError } = error;
 
@@ -92,15 +93,18 @@ const serviceSchema = z.object({
     z.string().min(1, "Cada detalle debe ser una cadena no vacía")
   ),
   iconUrl: z
-    .string()
-    .url("URL de icono inválida")
+    .enum(ICON_NAMES, {
+      // Ahora valida que sea uno de los nombres de icono permitidos
+      required_error: "El icono es obligatorio.",
+      invalid_type_error: "El icono seleccionado no es válido.",
+    })
     .optional()
-    .default("https://via.placeholder.com/64x64?text=Icon"),
+    .default("General"),
 });
-export const updateServiceSchema = serviceSchema.partial();
+const updateServiceSchema = serviceSchema.partial();
 
 // --- Blog Schema Definition ---
-export const blogSchema = z.object({
+const blogSchema = z.object({
   title: z
     .string({
       required_error: "El título de la novedad es obligatorio",
@@ -173,14 +177,33 @@ export const blogSchema = z.object({
   isPublished: z.boolean().default(false),
 
   iconUrl: z
-    .string()
-    .url("URL de icono inválida")
-    .default("https://via.placeholder.com/1200x600?text=Blog+Image"),
-
+    .enum(ICON_NAMES, {
+      // Ahora valida que sea uno de los nombres de icono permitidos
+      required_error: "El icono es obligatorio.",
+      invalid_type_error: "El icono seleccionado no es válido.",
+    })
+    .optional()
+    .default("General"),
   viewsCount: z.number().int().min(0).default(0),
 });
+const updateBlogSchema = blogSchema.partial();
 
-export const updateBlogSchema = blogSchema.partial();
+// --- Contact Form Schema Definition ---
+const contactFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, "El nombre debe tener al menos 2 caracteres.")
+    .max(50, "El nombre no puede exceder los 50 caracteres."),
+  email: z.string().email("Por favor, ingresa una dirección de correo válida."),
+  subject: z
+    .string()
+    .min(5, "El asunto debe tener al menos 5 caracteres.")
+    .max(100, "El asunto no puede exceder los 100 caracteres."),
+  message: z
+    .string()
+    .min(10, "El mensaje debe tener al menos 10 caracteres.")
+    .max(500, "El mensaje no puede exceder los 500 caracteres."),
+});
 
 // --- Validation Function ---
 const validateService = (data) => {
@@ -241,7 +264,7 @@ const validateId = (data) => {
     throw new ValidateError("Validation failed for user ID", detailedErrors);
   }
 };
-export const validateBlog = (data) => {
+const validateBlog = (data) => {
   try {
     return blogSchema.parse(data);
   } catch (error) {
@@ -259,19 +282,41 @@ export const validateBlog = (data) => {
   }
 };
 
+const validateContactForm = (data) => {
+  try {
+    return contactFormSchema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const details = error.errors.map((e) => ({
+        field: e.path.join("."),
+        message: e.message,
+      }));
+      throw new ValidateError(
+        "Validation failed for contact form data",
+        details
+      );
+    }
+    throw new SystemError(
+      "Unexpected error during contact form validation",
+      error.message
+    );
+  }
+};
 const validate = {
   userRegisterSchema,
   userLoginSchema,
   idSchema,
   serviceSchema,
   updateServiceSchema,
+  contactFormSchema,
   blogSchema,
   updateBlogSchema,
-  validateService,
   validateUserRegister,
   validateUserLogin,
   validateId,
+  validateService,
   validateBlog,
+  validateContactForm,
 };
 
 export { validate };

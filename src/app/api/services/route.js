@@ -8,7 +8,10 @@ export async function GET(req) {
   return await withErrorHandler(async (request) => {
     await connectToDatabase();
 
-    const services = await getServices();
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type");
+
+    const services = await getServices(type);
 
     // Responder con éxito
     return NextResponse.json(services);

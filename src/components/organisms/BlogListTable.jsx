@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useServices } from "@/hooks/useService";
+import { useBlog } from "@/hooks/useBlog";
 import {
   Table,
   TableBody,
@@ -37,133 +37,123 @@ import {
 import { ICON_OPTIONS, ICON_NAMES } from "../icons/icons.js";
 
 const CATEGORY_OPTIONS = [
-  "asesoria-juridica",
-  "area-contable-fiscal",
-  "area-financiera",
-  "servicios-complementarios",
+  "juridico",
+  "contable",
+  "fiscal",
+  "laboral",
+  "noticias-generales",
 ];
-export const ServiceListTable = () => {
+
+export const BlogListTable = () => {
   const {
-    data: services,
+    data: blogs,
     loading,
     error,
     validationErrors,
     fetchData,
-    createService,
-    updateService,
-    deleteService,
+    createBlog,
+    updateBlog,
+    deleteBlog,
     setError,
-  } = useServices();
-
+  } = useBlog();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentService, setCurrentService] = useState(null);
+  const [currentBlog, setCurrentBlog] = useState(null);
   const [formState, setFormState] = useState({
-    name: "",
-    type: "",
+    title: "",
     category: "",
-    shortDescription: "",
-    fullDescription: "",
-    details: [],
+    description: "",
+    content: "",
+    author: "",
     iconUrl: "",
+    viewsCount: 0,
   });
-  const [detailsInput, setDetailsInput] = useState("");
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [serviceToDeleteId, setServiceToDeleteId] = useState(null); // o blogToDeleteId
+  const [blogToDeleteId, setBlogToDeleteId] = useState(null);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-  // Manejador para manejar cambios en los campos del formulario
-  // Este manejador se usa para actualizar el estado del formulario cuando el usuario escribe en los campos
+
+  // Manejador genérico para inputs
   const handleChange = useCallback((e) => {
     const { id, value } = e.target;
-    setFormState((prev) => ({ ...prev, [id]: value }));
+    setFormState((prev) => ({
+      ...prev,
+      [id]: id === "viewsCount" ? Number(value) || 0 : value,
+    }));
   }, []);
 
   // Manejador específico para el Select de categoría
   const handleCategoryChange = useCallback((value) => {
     setFormState((prev) => ({ ...prev, category: value }));
   }, []);
-  //Manejo de detalles
-  const handleAddDetail = useCallback(() => {
-    if (detailsInput.trim() !== "") {
-      setFormState((prev) => ({
-        ...prev,
-        details: [...prev.details, detailsInput.trim()],
-      }));
-      setDetailsInput("");
-    }
-  }, [detailsInput]);
-  // Manejador para eliminar un detalle específico
-  const handleRemoveDetail = useCallback((indexToRemove) => {
-    setFormState((prev) => ({
-      ...prev,
-      details: prev.details.filter((_, index) => index !== indexToRemove),
-    }));
-  }, []);
-  //Manejador para crear un nuevo servicio
-  // Este manejador se usa para abrir el diálogo de creación de un nuevo servicio
+
+  // Reiniciar el formulario y abrir el diálogo para crear
   const handleCreateClick = useCallback(() => {
-    setCurrentService(null);
+    setCurrentBlog(null);
     setFormState({
-      name: "",
-      type: "",
+      title: "",
       category: "",
-      shortDescription: "",
-      fullDescription: "",
-      details: [],
+      description: "",
+      content: "",
+      author: "",
       iconUrl: "",
+      viewsCount: 0, // Resetear viewsCount
     });
-    setDetailsInput("");
     setIsDialogOpen(true);
     setError(null);
   }, [setError]);
-  // Manejador para editar un servicio existente
-  // Este manejador se usa para abrir el diálogo de edición de un servicio existente
+
+  // Cargar datos del blog para edición y abrir el diálogo
   const handleEditClick = useCallback(
-    (service) => {
-      setCurrentService(service);
+    (blog) => {
+      setCurrentBlog(blog);
       setFormState({
-        name: service.name || "",
-        type: service.type || "",
-        category: service.category || "",
-        shortDescription: service.shortDescription || "",
-        fullDescription: service.fullDescription || "",
-        details: service.details || [],
-        iconUrl: service.iconUrl || "",
+        title: blog.title || "",
+        category: blog.category || "",
+        description: blog.description || "",
+        content: blog.content || "",
+        author: blog.author || "",
+        iconUrl: blog.iconUrl || "",
+        viewsCount: blog.viewsCount || 0,
       });
-      setDetailsInput("");
       setIsDialogOpen(true);
       setError(null);
     },
     [setError]
   );
-  // Manejador para el submit del formulario
+
+  // Manejador para el envío del formulario (crear/actualizar)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Limpiar errores de validación anteriores al intentar el submit
+    setError(null);
 
     const dataToSend = {};
     for (const key in formState) {
-      if (key === "details") {
-        dataToSend.details = formState.details;
-      } else if (formState[key] !== "" && formState[key] !== null) {
+      // Incluir números siempre (como viewsCount, incluso si es 0)
+      if (typeof formState[key] === "number") {
+        dataToSend[key] = formState[key];
+      }
+      // Si es una cadena, la incluimos si no está vacía después de limpiar espacios
+      else if (
+        typeof formState[key] === "string" &&
+        formState[key].trim() !== ""
+      ) {
         dataToSend[key] = formState[key];
       }
     }
 
     let success;
-    if (currentService) {
-      success = await updateService(dataToSend, currentService.id);
+    if (currentBlog) {
+      success = await updateBlog(currentBlog.id, dataToSend);
     } else {
-      success = await createService(dataToSend);
+      success = await createBlog(dataToSend);
     }
 
-    // Lógica de toast unificada
     const title = success ? "Éxito" : "Error";
     const description = success
-      ? `Servicio ${currentService ? "actualizado" : "creado"} con éxito.`
-      : `Error al ${currentService ? "actualizar" : "crear"} el servicio.`;
+      ? `Blog ${currentBlog ? "actualizado" : "creado"} con éxito.`
+      : `Error al ${currentBlog ? "actualizar" : "crear"} el blog.`;
 
     if (success) {
       toast.success(description, { title });
@@ -173,37 +163,38 @@ export const ServiceListTable = () => {
       // Los errores de validación ya se muestran en el Dialog por `validationErrors`
     }
   };
-  // Manejador para abrir el diálogo de confirmación de eliminación
-  const handleDeleteClick = useCallback((serviceId) => {
-    setServiceToDeleteId(serviceId);
+
+  // Manejador para eliminar un blog
+  const handleDeleteClick = useCallback((blogId) => {
+    setBlogToDeleteId(blogId);
     setIsConfirmingDelete(true);
   }, []);
-  // Manejador para confirmar la eliminación de un servicio
-  const confirmDeleteService = useCallback(async () => {
+
+  const confirmDeleteBlog = useCallback(async () => {
     setIsConfirmingDelete(false); // Cierra el diálogo de confirmación
-    if (serviceToDeleteId) {
-      const success = await deleteService(serviceToDeleteId);
+    if (blogToDeleteId) {
+      const success = await deleteBlog(blogToDeleteId);
       const title = success ? "Éxito" : "Error";
       const description = success
-        ? "Servicio eliminado con éxito."
-        : "Error al eliminar el servicio.";
+        ? "Blog eliminado con éxito."
+        : "Error al eliminar el blog.";
 
       if (success) {
         toast.success(description, { title });
       } else {
         toast.error(description, { title });
       }
-      setServiceToDeleteId(null); // Limpia el ID
+      setBlogToDeleteId(null); // Limpia el ID
     }
-  }, [deleteService, serviceToDeleteId]);
+  }, [deleteBlog, blogToDeleteId]);
 
   if (loading) {
-    return <p>Cargando servicios...</p>;
+    return <p>Cargando blogs...</p>;
   }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Gestión de Servicios</h1>
+      <h1 className="text-3xl font-bold mb-6">Gestión de Blogs</h1>
 
       {error && (
         <Alert variant="destructive" className="mb-4">
@@ -214,48 +205,47 @@ export const ServiceListTable = () => {
       )}
 
       <div className="flex justify-end mb-4">
-        <Button onClick={handleCreateClick}>Crear Nuevo Servicio</Button>
+        <Button onClick={handleCreateClick}>Crear Nuevo Blog</Button>
       </div>
 
       <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[150px]">Nombre</TableHead>
-              <TableHead>Tipo</TableHead>
+              <TableHead className="w-[150px]">Título</TableHead>
               <TableHead>Categoría</TableHead>
-              <TableHead>Descripción Corta</TableHead>
+              {/* Eliminadas las columnas de Contenido y Descripción de la tabla */}
+              <TableHead>Autor</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {services.length === 0 ? (
+            {blogs.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-4">
-                  No hay servicios disponibles.
+                <TableCell colSpan={4} className="text-center py-4">
+                  {" "}
+                  {/* colSpan ajustado */}
+                  No hay blogs disponibles.
                 </TableCell>
               </TableRow>
             ) : (
-              services.map((service) => (
-                <TableRow key={service.id}>
-                  <TableCell className="font-medium">{service.name}</TableCell>
-                  <TableCell>{service.type}</TableCell>
-                  <TableCell>{service.category}</TableCell>
-                  <TableCell className="max-w-[200px] truncate">
-                    {service.shortDescription}
-                  </TableCell>
+              blogs.map((blog) => (
+                <TableRow key={blog.id}>
+                  <TableCell className="font-medium">{blog.title}</TableCell>
+                  <TableCell>{blog.category}</TableCell>
+                  <TableCell>{blog.author}</TableCell>
                   <TableCell className="text-right flex space-x-2 justify-end">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleEditClick(service)}
+                      onClick={() => handleEditClick(blog)}
                     >
                       Editar
                     </Button>
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleDeleteClick(service.id)}
+                      onClick={() => handleDeleteClick(blog.id)}
                     >
                       Eliminar
                     </Button>
@@ -271,12 +261,12 @@ export const ServiceListTable = () => {
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {currentService ? "Editar Servicio" : "Crear Nuevo Servicio"}
+              {currentBlog ? "Editar Blog" : "Crear Nuevo Blog"}
             </DialogTitle>
             <DialogDescription>
-              {currentService
-                ? "Realiza cambios en los detalles del servicio."
-                : "Rellena los campos para añadir un nuevo servicio."}
+              {currentBlog
+                ? "Realiza cambios en los detalles del blog."
+                : "Rellena los campos para añadir un nuevo blog."}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="grid gap-4 py-4">
@@ -297,29 +287,31 @@ export const ServiceListTable = () => {
             )}
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Nombre
+              <Label htmlFor="title" className="text-right">
+                Título
               </Label>
               <Input
-                id="name"
-                value={formState.name}
+                id="title"
+                value={formState.title}
                 onChange={handleChange}
                 className="col-span-3"
                 required
               />
             </div>
+            {/* Campo de Contenido (permanece en el diálogo) */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="type" className="text-right">
-                Tipo Juridico o Contable
+              <Label htmlFor="content" className="text-right">
+                Contenido
               </Label>
-              <Input
-                id="type"
-                value={formState.type}
+              <Textarea
+                id="content"
+                value={formState.content}
                 onChange={handleChange}
                 className="col-span-3"
                 required
               />
             </div>
+            {/* Desplegable para Categoría (permanece en el diálogo) */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
                 Categoría
@@ -341,28 +333,17 @@ export const ServiceListTable = () => {
                 </SelectContent>
               </Select>
             </div>
+            {/* Campo de Descripción (permanece en el diálogo) */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="shortDescription" className="text-right">
-                Descripción Corta
+              <Label htmlFor="description" className="text-right">
+                Descripción
               </Label>
               <Textarea
-                id="shortDescription"
-                value={formState.shortDescription}
+                id="description"
+                value={formState.description}
                 onChange={handleChange}
                 className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="fullDescription" className="text-right">
-                Descripción Completa
-              </Label>
-              <Textarea
-                id="fullDescription"
-                value={formState.fullDescription}
-                onChange={handleChange}
-                className="col-span-3"
-                required
+                maxLength={500}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -399,42 +380,31 @@ export const ServiceListTable = () => {
               </Select>
             </div>
 
-            <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right mt-2">Detalles</Label>
-              <div className="col-span-3 flex flex-col gap-2">
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    value={detailsInput}
-                    onChange={(e) => setDetailsInput(e.target.value)}
-                    placeholder="Añadir detalle..."
-                  />
-                  <Button type="button" onClick={handleAddDetail}>
-                    Añadir
-                  </Button>
-                </div>
-                {formState.details.length > 0 && (
-                  <ul className="list-disc list-inside text-sm text-gray-700">
-                    {formState.details.map((detail, index) => (
-                      <li
-                        key={index}
-                        className="flex justify-between items-center bg-gray-50 p-2 rounded"
-                      >
-                        {detail}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveDetail(index)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          X
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="author" className="text-right">
+                Autor
+              </Label>
+              <Input
+                id="author"
+                type="text"
+                value={formState.author}
+                onChange={handleChange}
+                className="col-span-3"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="viewsCount" className="text-right">
+                Vistas
+              </Label>
+              <Input
+                id="viewsCount"
+                type="number"
+                value={formState.viewsCount}
+                onChange={handleChange}
+                className="col-span-3"
+              />
             </div>
 
             <DialogFooter>
@@ -444,7 +414,7 @@ export const ServiceListTable = () => {
                 </Button>
               </DialogClose>
               <Button type="submit">
-                {currentService ? "Guardar Cambios" : "Crear Servicio"}
+                {currentBlog ? "Guardar Cambios" : "Crear Blog"}
               </Button>
             </DialogFooter>
           </form>
@@ -455,8 +425,8 @@ export const ServiceListTable = () => {
           <DialogHeader>
             <DialogTitle>Confirmar Eliminación</DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que quieres eliminar este elemento? Esta acción
-              no se puede deshacer.
+              ¿Estás seguro de que quieres eliminar este blog? Esta acción no se
+              puede deshacer.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -466,9 +436,10 @@ export const ServiceListTable = () => {
             >
               Cancelar
             </Button>
-            <Button variant="destructive" onClick={confirmDeleteService}>
-              {" "}
-              {/* Ajusta aquí si es para Service o Blog */}
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteBlog} // Llama a la nueva función de confirmación
+            >
               Eliminar
             </Button>
           </DialogFooter>

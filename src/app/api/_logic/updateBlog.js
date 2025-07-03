@@ -1,12 +1,11 @@
 import { Blog } from "@/lib/db/models/index.js";
 import { errors, validate } from "shared";
-import { updateBlogSchema } from "shared/validates/validate.js";
 import { validateAndFilterUpdates } from "@/lib/utils/validateAndFilterUpdates";
 import { ensureAdminAuth } from "@/lib/utils/ensureAdminAuth.js";
 
 const { SystemError, ValidateError, NotFoundError } = errors;
 
-const { validateId } = validate;
+const { validateId, updateBlogSchema } = validate;
 
 export const updateBlog = async (updatesData, adminId, blogId) => {
   // Validate admin ID
