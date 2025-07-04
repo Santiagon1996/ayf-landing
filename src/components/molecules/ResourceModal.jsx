@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import IconRenderer from "@/components/atoms/IconRenderer"; // Importa el átomo
+import { IoHeartSharp } from "react-icons/io5"; // Iconos de corazón
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 

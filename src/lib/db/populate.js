@@ -12,14 +12,8 @@ async function populateDatabase() {
   // Datos de ejemplo para poblar
   const users = [
     {
-      name: "Lio Messi",
-      email: "lio@messi.com",
-      password: "123123123",
-      role: "admin",
-    },
-    {
-      name: "Cristiano Ronaldo",
-      email: "cris@ronaldo.com",
+      name: "admin",
+      email: "admin@admin.com",
       password: "123123123",
       role: "admin",
     },
