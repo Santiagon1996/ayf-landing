@@ -1,9 +1,9 @@
 import "dotenv/config"; // Cargar variables de entorno desde .env
 import mongoose from "mongoose";
 
-const { MONGODB_URI, DATABASE_URL, DATABASE_NAME } = process.env;
+const { MONGODB_URI } = process.env;
 
-console.log({ DATABASE_URL, DATABASE_NAME, MONGODB_URI });
+console.log({ MONGODB_URI });
 
 // Decide qué URI usar
 let DATABASE_URI;
@@ -12,9 +12,6 @@ let DATABASE_URI;
 if (MONGODB_URI) {
   DATABASE_URI = MONGODB_URI;
   console.log("USING MONGODB_URI:", MONGODB_URI ? "Defined" : "Undefined"); // Nuevo log
-} else if (DATABASE_URL && DATABASE_NAME) {
-  DATABASE_URI = `${DATABASE_URL}/${DATABASE_NAME}`;
-  console.log("USING DATABASE_URL/DATABASE_NAME:", DATABASE_URL, DATABASE_NAME); // Nuevo log
 } else {
   throw new Error("No se ha definido ninguna URI para la base de datos");
 }
