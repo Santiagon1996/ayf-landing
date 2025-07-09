@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const MainHeading = ({
   textoPrincipal,
   textoSecundario,
-  colorDestacado = "text-blue-600",
+  colorDestacado = "text-blue-900",
   animationDelay = 0,
 }) => {
   const variantesTitulo = {

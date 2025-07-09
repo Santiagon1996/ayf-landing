@@ -60,33 +60,9 @@ export const metadata = {
   // Información sobre el autor o empresa
   authors: [{ name: "AyF Asociados" }],
   // Configuración para Open Graph (redes sociales y mensajería)
-  openGraph: {
-    title: "AyF Asociados | Asesoría Jurídica y Contable en Barcelona",
-    description:
-      "Obtén asesoramiento experto en servicios jurídicos y contables para tu empresa o necesidades personales en Barcelona con AyF Asociados.",
-    url: "https://www.ayfasociados.com", // Reemplaza con tu dominio real
-    siteName: "AyF Asociados",
-    images: [
-      {
-        url: "/AyF-Logo.png", // Asegúrate de que esta ruta sea correcta y la imagen exista
-        width: 800,
-        height: 600,
-        alt: "Logo de AyF Asociados",
-      },
-      // Puedes añadir más imágenes si lo deseas
-    ],
-    locale: "es_ES",
-    type: "website",
-  },
+
   // Configuración para Twitter Cards
-  twitter: {
-    card: "summary_large_image",
-    title: "AyF Asociados | Abogados y Contadores en Barcelona",
-    description:
-      "Expertos en servicios jurídicos y contables. Tu solución integral para derecho y finanzas en Barcelona.",
-    creator: "@AyFAsociados", // Si tienes una cuenta de Twitter
-    images: ["https://www.ayfasociados.com/AyF-Logo.png"], // Reemplaza con tu dominio real
-  },
+
   // Favicon
   icons: {
     icon: "/favicon.ico",

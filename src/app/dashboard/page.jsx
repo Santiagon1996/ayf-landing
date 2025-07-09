@@ -1,5 +1,3 @@
-// app/dashboard/page.jsx
-
 export default function DashboardOverviewPage() {
   return (
     <div className="p-6">

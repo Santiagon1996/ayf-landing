@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const SectionTitle = ({
   tituloFijo,
   tituloDinamico,
-  colorFijo = "text-blue-700",
+  colorFijo = "text-blue-950",
   colorDinamico = "text-indigo-600",
   animationDelay = 0,
 }) => {

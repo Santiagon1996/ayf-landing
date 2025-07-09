@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import Welcome from "../organisms/Welcome.jsx";
 import Contact from "@/components/organisms/Contact.jsx";
 import AboutUs from "@/components/organisms/AboutUs.jsx";
+import Footer from "../organisms/Footer.jsx";
 
 /**
  * Plantilla: Define la estructura y el contenido principal de la página de inicio.
@@ -19,10 +20,16 @@ const HomePageTemplate = () => {
         <Welcome />
       </div>
 
+      {/* Sección de Sobre nosotras */}
+      <div id="sobre-nosotras" className="pt-20 -mt-20">
+        <AboutUs />
+      </div>
+                <Separator className="my-16" />
+
       <div className="container mx-auto px-4 py-8">
         {/* Sección de Servicios Jurídicos */}
         <div id="servicios-juridicos" className="pt-20 -mt-20">
-          <h1 className="text-4xl font-bold text-center mb-10 text-primary">
+          <h1 className="text-4xl font-bold text-center mb-10 text-primary font-body">
             Area Juridica
           </h1>
           <ServiceForType type="juridico" />
@@ -51,18 +58,11 @@ const HomePageTemplate = () => {
 
       <Separator className="my-16" />
 
-      {/* Sección de Sobre nosotras */}
-      <div id="sobre-nosotras" className="pt-20 -mt-20">
-        <h1 className="text-4xl font-bold text-center mb-10 text-primary">
-          Sobre Nosotras
-        </h1>
-        <AboutUs />
-      </div>
-
       {/* Sección de Contacto */}
       <div id="contacto" className="pt-20 -mt-20">
         <Contact />
       </div>
+      <Footer />
     </>
   );
 };

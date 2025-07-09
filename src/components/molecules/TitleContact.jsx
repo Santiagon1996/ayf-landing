@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const TituloHero = ({
   titulo,
   palabraDestacada,
-  colorDestacado = "text-blue-600",
+  colorDestacado = "text-blue-950",
   retrasoAnimacion = 0, // Delay en segundos para la aparición del título
 }) => {
   // Divide el título para poder aplicar estilos solo a la palabra destacada

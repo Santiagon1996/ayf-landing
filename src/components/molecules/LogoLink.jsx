@@ -2,16 +2,20 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import useAuthRedirect from "@/hooks/useAuthRedirect"; // Importa tu hook aquí
 
 /**
  * Molécula: Representa el logo de la empresa que actúa como enlace al dashboard
  * o a la página de autenticación, con animación.
  */
 const LogoLink = () => {
-  const redirectToAuthOrDashboard = useAuthRedirect();
+  const router = useRouter();
+
+  const handleLogoClick = () => {
+    router.push("/dashboard");
+  };
 
   return (
     <motion.div
@@ -23,7 +27,7 @@ const LogoLink = () => {
         asChild
         variant="link"
         className="p-0 h-auto"
-        onClick={redirectToAuthOrDashboard}
+        onClick={handleLogoClick}
       >
         <div className="flex items-center space-x-2 cursor-pointer">
           <Image

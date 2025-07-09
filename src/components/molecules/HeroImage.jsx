@@ -1,4 +1,5 @@
 // src/components/molecules/HeroImage.jsx
+
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -20,19 +21,24 @@ const HeroImage = ({
     },
   };
 
+  const containerClasses =
+    "md:w-1/2 flex justify-center p-4 md:p-8 mt-8 md:mt-0 md:max-h-[500px]";
+
+  const imageClasses = "rounded-lg shadow-xl max-w-full object-cover ";
+
   return (
     <motion.div
       variants={variantesImagen}
       initial="hidden"
       animate="visible"
-      className="md:w-1/2 flex justify-center p-4 md:p-8 mt-8 md:mt-0"
+      className={containerClasses}
     >
       <Image
         src={src}
         alt={alt}
         width={width}
         height={height}
-        className="rounded-lg shadow-xl max-w-full h-auto"
+        className={imageClasses}
         priority={priority}
       />
     </motion.div>

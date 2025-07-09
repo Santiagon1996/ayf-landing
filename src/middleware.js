@@ -14,7 +14,7 @@ export async function middleware(request) {
   ]; // Añade todas las rutas de tu dashboard aquí
 
   // 2. Define la ruta a la que redirigir si no hay token
-  const loginUrl = "/auth"; // Asegúrate de que esta sea la ruta a tu página de login
+  const loginUrl = "/login"; // Asegúrate de que esta sea la ruta a tu página de login
 
   // 3. Comprueba si la ruta actual es una de las protegidas
   if (protectedRoutes.includes(pathname)) {

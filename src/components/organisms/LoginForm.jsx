@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 import { useLoginUser } from "@/hooks/useLoginUser";
-import { isUserLoggedIn } from "@/lib/utils/isUserLoggedIn";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,44 +20,40 @@ export const LoginForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     password: "",
-    confirmPassword: "",
   });
+  const [checkingCookie, setCheckingCookie] = useState(true);
 
   // Check login status on component mount
 
   useEffect(() => {
-    const checkLoginAndRedirect = async () => {
-      try {
-        const loggedIn = await isUserLoggedIn();
-        if (loggedIn) {
-          router.push("/dashboard");
-        }
-      } catch (err) {
-        console.error(
-          "Error al verificar el estado de login (SystemError):",
-          err.message
-        );
-      }
-    };
-    checkLoginAndRedirect();
+    // Verificar si la cookie accessToken está presente
+    const hasAccessToken =
+      typeof document !== "undefined" &&
+      document.cookie.includes("accessToken=");
+
+    if (hasAccessToken) {
+      // Si la cookie está presente, redirige al dashboard.
+      // Usa replace para que no puedan volver al login con el botón de atrás.
+      router.replace("/dashboard");
+    } else {
+      setCheckingCookie(false); // No hay cookie, mostrar el formulario de login
+    }
   }, [router]);
+
+  if (checkingCookie) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-xl text-gray-600">Cargando...</p>
+      </div>
+    );
+  }
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Client-side validation for password mismatch BEFORE API call
-    if (formData.password !== formData.confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "¡Error de Validación!", // More specific title
-        text: "Las contraseñas no coinciden.",
-        confirmButtonText: "OK",
-      });
-      return; // Stop function execution
-    }
 
     // Attempt to register the user via the hook
     const isSuccess = await loginUser(formData);
@@ -70,14 +65,13 @@ export const LoginForm = () => {
         text: "Bienvenido",
         confirmButtonText: "OK",
       }).then(() => {
-        router.push("/dashboard"); // Redirect after user acknowledges success
+        router.replace("/dashboard"); // Redirect after user acknowledges success
       });
-      setFormData({ name: "", password: "", confirmPassword: "" }); // Clear form on success
+      setFormData({ name: "", password: "" });
     } else {
       // Handle general errors (network, duplication, system errors) from the hook
       // Field-specific validation errors are handled by validationErrors state
       if (error) {
-        // The 'error' state from useRegisterUser
         Swal.fire({
           icon: "error",
           title: "¡Error en el login", // General error title
@@ -137,25 +131,6 @@ export const LoginForm = () => {
             {validationErrors.password}
           </p>
         )}
-      </div>
-
-      {/* Confirm Password Field */}
-      <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="confirmPassword">Confirma Contraseña</Label>
-        <Input
-          type="password"
-          id="confirmPassword" // Unique ID
-          name="confirmPassword" // Unique name
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          disabled={loading}
-          // Optional: Add specific validation error class if your Zod schema handles confirmPassword as a separate field
-          // className={validationErrors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
-        />
-        {/* Optional: Display specific confirmPassword error if available from validationErrors */}
-        {/* {validationErrors.confirmPassword && (
-          <p className="text-sm text-red-500 mt-1">{validationErrors.confirmPassword}</p>
-        )} */}
       </div>
 
       {/* Link to Login page */}
