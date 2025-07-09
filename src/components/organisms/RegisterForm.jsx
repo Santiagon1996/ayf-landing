@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 import { useRegisterUser } from "@/hooks/useRegisterUser";
-import { isUserLoggedIn } from "@/lib/utils/isUserLoggedIn";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,22 +26,6 @@ export const RegisterForm = () => {
 
   // Check login status on component mount
 
-  useEffect(() => {
-    const checkLoginAndRedirect = async () => {
-      try {
-        const loggedIn = await isUserLoggedIn();
-        if (loggedIn) {
-          router.push("/dashboard");
-        }
-      } catch (err) {
-        console.error(
-          "Error al verificar el estado de login (SystemError):",
-          err.message
-        );
-      }
-    };
-    checkLoginAndRedirect();
-  }, [router]);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
