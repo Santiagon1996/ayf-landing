@@ -9,25 +9,17 @@ console.log({ DATABASE_URL, DATABASE_NAME, MONGODB_URI });
 let DATABASE_URI;
 
 //Conexión a MongoDB Atlas
-
 if (MONGODB_URI) {
   DATABASE_URI = MONGODB_URI;
+  console.log("USING MONGODB_URI:", MONGODB_URI ? "Defined" : "Undefined"); // Nuevo log
 } else if (DATABASE_URL && DATABASE_NAME) {
   DATABASE_URI = `${DATABASE_URL}/${DATABASE_NAME}`;
+  console.log("USING DATABASE_URL/DATABASE_NAME:", DATABASE_URL, DATABASE_NAME); // Nuevo log
 } else {
   throw new Error("No se ha definido ninguna URI para la base de datos");
 }
 
-// Conexión a MongoDB local
-// if (DATABASE_URL && DATABASE_NAME) {
-//   console.log(`Conectando a MongoDB en ${DATABASE_URL}/${DATABASE_NAME}...`);
-//   DATABASE_URI = `${DATABASE_URL}/${DATABASE_NAME}`;
-// } else if (MONGODB_URI) {
-//   console.log(`Conectando a MongoDB en ${MONGODB_URI}...`);
-//   DATABASE_URI = MONGODB_URI;
-// } else {
-//   throw new Error("No se ha definido ninguna URI para la base de datos");
-// }
+console.log("Final DATABASE_URI being used:", DATABASE_URI);
 
 let cached = global.mongoose;
 
