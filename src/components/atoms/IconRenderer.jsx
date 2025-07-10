@@ -1,5 +1,5 @@
 // src/components/atoms/IconRenderer.jsx
-"use client"; // Necesario si tu lib/icons.js usa imports de componentes React-icons
+"use client";
 
 import React from "react";
 import { ICON_OPTIONS } from "../icons/icons.js";

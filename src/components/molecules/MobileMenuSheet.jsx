@@ -1,4 +1,5 @@
 // src/components/molecules/MobileMenuSheet.jsx
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";

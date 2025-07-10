@@ -18,15 +18,12 @@ export const getBlogByIdRequest = async (blogId) => {
     throw new SystemError("Validation failed for blog ID", error.message);
   }
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/blogs/${blogId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    response = await fetch(`api/blogs/${blogId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     throw new SystemError("Error al obtener el blog", error.message);
   }

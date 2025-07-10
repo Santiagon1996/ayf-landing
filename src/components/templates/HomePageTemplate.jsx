@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import ServiceForType from "../organisms/ServiceForType.jsx";
 import DisplayBlogs from "@/components/organisms/DisplayBlogs.jsx";
@@ -24,7 +22,7 @@ const HomePageTemplate = () => {
       <div id="sobre-nosotras" className="pt-20 -mt-20">
         <AboutUs />
       </div>
-                <Separator className="my-16" />
+      <Separator className="my-16" />
 
       <div className="container mx-auto px-4 py-8">
         {/* Sección de Servicios Jurídicos */}

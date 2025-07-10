@@ -19,15 +19,12 @@ export const deleteBlogRequest = async (blogId) => {
   }
 
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/blogs/${blogId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    response = await fetch(`api/blogs/${blogId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     throw new SystemError("Error al eliminar el blog", error.message);
   }

@@ -1,5 +1,3 @@
-// src/components/templates/Welcome.jsx
-
 "use client";
 import React from "react";
 import Navbar from "@/components/organisms/NavBar";

@@ -12,16 +12,13 @@ export const registerUserRequest = (userData) => {
 
   return (async () => {
     try {
-      response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/admin/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, email, password }),
-        }
-      );
+      response = await fetch(`api/admin/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
     } catch (error) {
       throw new SystemError("Error al registrar usuario", error.message);
     }

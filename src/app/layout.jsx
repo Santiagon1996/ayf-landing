@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono, EB_Garamond, Inter, Lora } from "next/font/google";
+import Head from "next/head";
 
 import "./globals.css";
 
@@ -43,10 +44,10 @@ export const metadata = {
   // Palabras clave para ayudar a los motores de búsqueda (opcional, pero útil)
   keywords: [
     "estudio jurídico contable",
-    "asesoramiento legal Barcelona",
-    "servicios contables Barcelona",
-    "abogados Barcelona",
-    "contadores Barcelona",
+    "asesoramiento legal Rosario",
+    "servicios contables Rosario",
+    "abogados Rosario",
+    "contadores Rosario",
     "asesoría fiscal",
     "derecho mercantil",
     "auditoría contable",
@@ -65,7 +66,7 @@ export const metadata = {
 
   // Favicon
   icons: {
-    icon: "/favicon.ico",
+    icon: "/AyF-Logo.png",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
@@ -74,6 +75,48 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
+      <Head>
+        {/* Título para la página (importante para SEO y UX) */}
+        <title>{metadata.title.default}</title>
+
+        {/* Meta descripción para los motores de búsqueda */}
+        <meta name="description" content={metadata.description} />
+
+        {/* Define el favicon (ícono de la pestaña del navegador) */}
+        <link
+          rel="icon"
+          href="/AyF-Logo.png"
+          sizes="512x512"
+          type="image/png"
+        />
+
+        {/* Configuración de vista en dispositivos móviles */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {/* Metaetiquetas relacionadas con el idioma y la región */}
+        <meta name="language" content="es" />
+        <meta name="geo.region" content="AR-S" />
+        <meta name="geo.placename" content="Rosario" />
+        <meta name="geo.position" content="-32.94682;-60.63932" />
+        <meta name="ICBM" content="-32.94682, -60.63932" />
+
+        {/* Etiqueta para autor */}
+        <meta name="author" content="AyF" />
+
+        {/* Palabras clave para motores de búsqueda */}
+        <meta name="keywords" content={metadata.keywords} />
+
+        {/* Atributos de robots para indexación y seguimiento */}
+        <meta name="robots" content="index, follow" />
+
+        {/* Preconexión para optimizar carga de recursos */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </Head>
       <body
         className={`${ebGaramond.variable} ${inter.variable} ${lora.variable} antialiased`}
       >

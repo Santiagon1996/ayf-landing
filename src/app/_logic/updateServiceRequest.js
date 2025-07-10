@@ -34,16 +34,13 @@ export const updateServiceRequest = async (updatesData, serviceId) => {
   }
 
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/services/${validateServiceId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validatedUpdatedService),
-      }
-    );
+    response = await fetch(`api/services/${validateServiceId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validatedUpdatedService),
+    });
   } catch (error) {
     throw new SystemError("Error al editar el servicio", error.message);
   }

@@ -14,9 +14,7 @@ export const getServiceRequest = async (type) => {
   let body;
 
   // Construye la URL dinámicamente basándose en el parámetro 'type'
-  const url = type
-    ? `${process.env.NEXT_PUBLIC_API_URL}/services?type=${type}`
-    : `${process.env.NEXT_PUBLIC_API_URL}/services`;
+  const url = type ? `api/services?type=${type}` : `api/services`;
 
   try {
     response = await fetch(url, {

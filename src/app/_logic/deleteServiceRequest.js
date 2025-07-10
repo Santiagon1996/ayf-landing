@@ -19,15 +19,12 @@ export const deleteServiceRequest = async (serviceId) => {
   }
 
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/services/${validatedServiceId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    response = await fetch(`api/services/${validatedServiceId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     throw new SystemError("Error al eliminar el servicio", error.message);
   }

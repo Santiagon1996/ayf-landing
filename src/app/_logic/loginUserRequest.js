@@ -12,7 +12,7 @@ export const loginUserRequest = (userData) => {
 
   return (async () => {
     try {
-      response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/auth`, {
+      response = await fetch(`api/admin/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,4 +1,4 @@
-// src/components/organisms/SeccionContacto.jsx
+"use client";
 import React from "react";
 import { motion } from "framer-motion";
 import ButtonContact from "@/components/atoms/ButtonContact";

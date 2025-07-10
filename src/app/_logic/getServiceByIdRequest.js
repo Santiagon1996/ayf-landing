@@ -18,15 +18,12 @@ export const getServiceByIdRequest = async (serviceId) => {
     throw new SystemError("Validation failed for service ID", error.message);
   }
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/services/${validatedServiceId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    response = await fetch(`api/services/${validatedServiceId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     throw new SystemError("Error al obtener el servicio", error.message);
   }

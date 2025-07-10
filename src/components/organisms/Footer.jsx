@@ -1,5 +1,4 @@
-// src/components/Footer.jsx
-
+"use client";
 import React from "react";
 
 const Footer = () => {

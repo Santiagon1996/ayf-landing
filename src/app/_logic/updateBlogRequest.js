@@ -34,16 +34,13 @@ export const updateBlogRequest = async (blogId, updatesData) => {
   }
 
   try {
-    response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/blogs/${blogId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validatedUpdatedBlog),
-      }
-    );
+    response = await fetch(`api/blogs/${blogId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validatedUpdatedBlog),
+    });
   } catch (error) {
     throw new SystemError("Error al editar el blog", error.message);
   }
