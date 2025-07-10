@@ -23,20 +23,15 @@ export const LoginForm = () => {
   });
   const [checkingCookie, setCheckingCookie] = useState(true);
 
-  // Check login status on component mount
-
   useEffect(() => {
-    // Verificar si la cookie accessToken está presente
     const hasAccessToken =
       typeof document !== "undefined" &&
       document.cookie.includes("accessToken=");
 
     if (hasAccessToken) {
-      // Si la cookie está presente, redirige al dashboard.
-      // Usa replace para que no puedan volver al login con el botón de atrás.
       router.replace("/dashboard");
     } else {
-      setCheckingCookie(false); // No hay cookie, mostrar el formulario de login
+      setCheckingCookie(false);
     }
   }, [router]);
 

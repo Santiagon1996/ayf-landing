@@ -7,7 +7,7 @@ export const getBlogRequest = async () => {
   let body;
 
   try {
-    response = await fetch(`api/blogs`, {
+    response = await fetch(`/api/blogs`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

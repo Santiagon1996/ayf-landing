@@ -22,7 +22,7 @@ export const createBlogRequest = async (blogData) => {
   }
 
   try {
-    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
+    response = await fetch(`api/blogs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(validatedBlogData),
