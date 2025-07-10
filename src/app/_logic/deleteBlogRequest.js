@@ -19,7 +19,7 @@ export const deleteBlogRequest = async (blogId) => {
   }
 
   try {
-    response = await fetch(`api/blogs/${blogId}`, {
+    response = await fetch(`/api/blogs/${blogId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

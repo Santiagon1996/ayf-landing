@@ -34,7 +34,7 @@ export const updateBlogRequest = async (blogId, updatesData) => {
   }
 
   try {
-    response = await fetch(`api/blogs/${blogId}`, {
+    response = await fetch(`/api/blogs/${blogId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

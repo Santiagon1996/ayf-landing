@@ -34,7 +34,7 @@ export const updateServiceRequest = async (updatesData, serviceId) => {
   }
 
   try {
-    response = await fetch(`api/services/${validateServiceId}`, {
+    response = await fetch(`/api/services/${validateServiceId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

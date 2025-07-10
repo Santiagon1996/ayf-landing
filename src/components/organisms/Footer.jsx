@@ -28,7 +28,7 @@ const Footer = () => {
         {/* Sección de Copyright */}
         <div className="text-center md:text-right">
           <p className="text-sm">
-            &copy; {currentYear} AYF Asociados. Todos los derechos reservados.
+            &copy; {currentYear} AyF Asociados. Todos los derechos reservados.
           </p>
           <p className="text-xs mt-1 opacity-75">
             Estudio Jurídico Contable. Asesoramiento integral.

@@ -97,7 +97,7 @@ export const BlogListTable = () => {
       description: "",
       content: "",
       author: "",
-      iconUrl: "",
+      //iconUrl: "",
       viewsCount: 0, // Resetear viewsCount
     });
     setIsDialogOpen(true);
@@ -114,7 +114,7 @@ export const BlogListTable = () => {
         description: blog.description || "",
         content: blog.content || "",
         author: blog.author || "",
-        iconUrl: blog.iconUrl || "",
+        // iconUrl: blog.iconUrl || "",
         viewsCount: blog.viewsCount || 0,
       });
       setIsDialogOpen(true);
@@ -345,39 +345,6 @@ export const BlogListTable = () => {
                 className="col-span-3"
                 maxLength={500}
               />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="iconUrl" className="text-right">
-                Icono
-              </Label>
-              <Select
-                value={formState.iconUrl} // El valor será el nombre del icono, ej: "Blog"
-                onValueChange={(value) =>
-                  setFormState((prev) => ({ ...prev, iconUrl: value }))
-                }
-              >
-                <SelectTrigger id="iconUrl" className="col-span-3">
-                  <SelectValue placeholder="Selecciona un icono" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px] overflow-y-auto">
-                  {" "}
-                  {/* Para muchos iconos */}
-                  {ICON_NAMES.map((iconName) => {
-                    const IconComponent = ICON_OPTIONS[iconName]; // Obtén el componente del icono
-                    return (
-                      <SelectItem key={iconName} value={iconName}>
-                        <div className="flex items-center gap-2">
-                          {IconComponent && (
-                            <IconComponent className="h-4 w-4" />
-                          )}{" "}
-                          {/* Muestra el icono */}
-                          {iconName}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">

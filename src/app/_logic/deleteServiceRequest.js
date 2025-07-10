@@ -19,7 +19,7 @@ export const deleteServiceRequest = async (serviceId) => {
   }
 
   try {
-    response = await fetch(`api/services/${validatedServiceId}`, {
+    response = await fetch(`/api/services/${validatedServiceId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

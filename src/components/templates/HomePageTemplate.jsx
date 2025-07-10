@@ -27,7 +27,7 @@ const HomePageTemplate = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Sección de Servicios Jurídicos */}
         <div id="servicios-juridicos" className="pt-20 -mt-20">
-          <h1 className="text-4xl font-bold text-center mb-10 text-primary font-body">
+          <h1 className="text-4xl font-extrabold text-center mb-12 text-blue-950">
             Area Juridica
           </h1>
           <ServiceForType type="juridico" />
@@ -37,7 +37,7 @@ const HomePageTemplate = () => {
 
         {/* Sección de Servicios Contables */}
         <div id="servicios-contables" className="pt-20 -mt-20">
-          <h1 className="text-4xl font-bold text-center mb-10 text-primary">
+          <h1 className="text-4xl font-extrabold text-center mb-12 text-blue-950">
             Area Contable
           </h1>
           <ServiceForType type="contable" />
@@ -47,7 +47,7 @@ const HomePageTemplate = () => {
 
         {/* Sección de Blog*/}
         <div id="blog" className="pt-20 -mt-20">
-          <h1 className="text-4xl font-bold text-center mb-10 text-primary">
+          <h1 className="text-4xl font-extrabold text-center mb-12 text-blue-950">
             Nuestro Blog
           </h1>
           <DisplayBlogs />

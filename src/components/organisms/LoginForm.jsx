@@ -60,17 +60,18 @@ export const LoginForm = () => {
         text: "Bienvenido",
         confirmButtonText: "OK",
       }).then(() => {
-        router.replace("/dashboard"); // Redirect after user acknowledges success
+        setTimeout(() => {
+          router.replace("/dashboard");
+          router.refresh();
+        }, 100);
       });
       setFormData({ name: "", password: "" });
     } else {
-      // Handle general errors (network, duplication, system errors) from the hook
-      // Field-specific validation errors are handled by validationErrors state
       if (error) {
         Swal.fire({
           icon: "error",
-          title: "¡Error en el login", // General error title
-          text: error, // Display the error message from the hook
+          title: "¡Error en el login",
+          text: error,
           confirmButtonText: "OK",
         });
       }

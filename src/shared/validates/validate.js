@@ -176,14 +176,14 @@ const blogSchema = z.object({
 
   isPublished: z.boolean().default(false),
 
-  iconUrl: z
-    .enum(ICON_NAMES, {
-      // Ahora valida que sea uno de los nombres de icono permitidos
-      required_error: "El icono es obligatorio.",
-      invalid_type_error: "El icono seleccionado no es válido.",
-    })
-    .optional()
-    .default("General"),
+  // iconUrl: z
+  //   .enum(ICON_NAMES, {
+  //     // Ahora valida que sea uno de los nombres de icono permitidos
+  //     required_error: "El icono es obligatorio.",
+  //     invalid_type_error: "El icono seleccionado no es válido.",
+  //   })
+  //   .optional()
+  //   .default("General"),
   viewsCount: z.number().int().min(0).default(0),
 });
 const updateBlogSchema = blogSchema.partial();

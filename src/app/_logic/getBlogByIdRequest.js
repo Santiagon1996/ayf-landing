@@ -18,7 +18,7 @@ export const getBlogByIdRequest = async (blogId) => {
     throw new SystemError("Validation failed for blog ID", error.message);
   }
   try {
-    response = await fetch(`api/blogs/${blogId}`, {
+    response = await fetch(`/api/blogs/${blogId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

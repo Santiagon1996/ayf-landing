@@ -1,20 +1,20 @@
 // src/components/organisms/DisplayBlogs.jsx
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useBlog } from "@/hooks/useBlog";
-import ResourceCard from "@/components/molecules/ResourceCard";
-import ResourceModal from "@/components/molecules/ResourceModal";
+import BlogCard from "@/components/molecules/BlogCard";
+import BlogModal from "@/components/molecules/BlogModal";
 import { motion } from "framer-motion";
-import { Skeleton } from "@/components/ui/skeleton"; // Importamos Skeleton directamente aquí
+import { Skeleton } from "@/components/ui/skeleton";
+import Swal from "sweetalert2"; // Para notificaciones de error
 
 /**
  * Organismo: Muestra una cuadrícula de blogs.
  * Encapsula la lógica de fetching de blogs, estado del modal y renderizado de las tarjetas.
  */
 const DisplayBlogs = () => {
-  // Ya no recibe props de componentes de estado
-  const { data: blogs, loading, error, fetchData, updateResource } = useBlog();
+  const { data: blogs, loading, error, fetchData } = useBlog(); // updateResource ya no es necesario
 
   const [selectedResource, setSelectedResource] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,27 +27,6 @@ const DisplayBlogs = () => {
     setSelectedResource(blog);
     setIsModalOpen(true);
   };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedResource(null);
-  };
-
-  const handleLikeToggle = useCallback(
-    async (blogId, isLikedNow) => {
-      if (updateResource) {
-        try {
-          await updateResource(blogId, {
-            views: isLikedNow ? "increment" : "decrement",
-          });
-          fetchData();
-        } catch (err) {
-          console.error("Error al actualizar los likes del blog:", err);
-        }
-      }
-    },
-    [updateResource, fetchData]
-  );
 
   const cardContainerVariants = {
     hidden: { opacity: 0 },
@@ -68,15 +47,10 @@ const DisplayBlogs = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          {[...Array(2)].map(
-            (
-              _,
-              i // Muestra 2 esqueletos para la cuadrícula de 2 columnas
-            ) => (
-              <Skeleton key={i} className="h-60 w-full" />
-            )
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-60 w-full rounded-lg" />
+          ))}
         </div>
       </div>
     );
@@ -87,7 +61,10 @@ const DisplayBlogs = () => {
     return (
       <div className="text-center py-16 text-red-600 font-semibold text-lg">
         <p>Error al cargar los blogs.</p>
-        <p>Por favor, inténtelo de nuevo más tarde. ({error.message})</p>
+        <p>
+          Por favor, inténtelo de nuevo más tarde. (
+          {error.message || "Error desconocido"})
+        </p>
       </div>
     );
   }
@@ -111,36 +88,18 @@ const DisplayBlogs = () => {
       >
         {blogs.map((blog) => (
           <motion.div key={blog.id} variants={cardItemVariants}>
-            <ResourceCard
-              resource={blog}
-              titleKey="title"
-              categoryKey="category"
-              typeKey="type"
-              descriptionKey="shortDescription"
-              iconKey="imageUrl"
-              authorKey="author"
-              publishDateKey="publishDate"
-              viewsCountKey="views"
-              onClick={() => handleCardClick(blog)}
-              onLikeToggle={handleLikeToggle}
-            />
+            <BlogCard blog={blog} onClick={handleCardClick} />
           </motion.div>
         ))}
       </motion.div>
 
-      <ResourceModal
+      <BlogModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        resource={selectedResource}
-        titleKey="title"
-        categoryKey="category"
-        typeKey="type"
-        fullDescriptionKey="fullDescription"
-        detailsKey="details"
-        iconKey="imageUrl"
-        authorKey="author"
-        publishDateKey="publishDate"
-        viewsCountKey="views"
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedResource(null);
+        }}
+        blog={selectedResource}
       />
     </>
   );

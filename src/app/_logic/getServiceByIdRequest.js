@@ -18,7 +18,7 @@ export const getServiceByIdRequest = async (serviceId) => {
     throw new SystemError("Validation failed for service ID", error.message);
   }
   try {
-    response = await fetch(`api/services/${validatedServiceId}`, {
+    response = await fetch(`/api/services/${validatedServiceId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
