@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { LogoutButton } from "@/components/atoms/LogoutButton";
 // Iconos (puedes usar Lucide React si lo tienes instalado con Shadcn)
 import { Menu } from "lucide-react"; // Instalar si no lo tienes: npm install lucide-react
 import { Toaster } from "sonner"; // Import Toaster from Sonner
@@ -106,7 +106,7 @@ export default function DashboardLayout({ children }) {
                 className="flex items-center gap-2 text-lg font-semibold text-blue-600"
               >
                 {/* <Package2 className="h-6 w-6" /> */}
-                <span>AdminPanel</span>
+                <span>Admin/Panel</span>
               </Link>
               <SidebarNav
                 isMobile={true}
@@ -136,7 +136,7 @@ export default function DashboardLayout({ children }) {
                 className="relative h-8 w-8 rounded-full"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
+                  <AvatarImage src="/AyF-Logo.png" alt="User Avatar" />
                   <AvatarFallback>AD</AvatarFallback>{" "}
                   {/* Iniciales del admin */}
                 </Avatar>
@@ -152,10 +152,10 @@ export default function DashboardLayout({ children }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Perfil</DropdownMenuItem>
-              <DropdownMenuItem>Ajustes</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+              <DropdownMenuItem>
+                <LogoutButton />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

@@ -28,7 +28,7 @@ const HomePageTemplate = () => {
         {/* Sección de Servicios Jurídicos */}
         <div id="servicios-juridicos" className="pt-20 -mt-20">
           <h1 className="text-4xl font-extrabold text-center mb-12 text-blue-950">
-            Area Juridica
+            Area Jurídica
           </h1>
           <ServiceForType type="juridico" />
         </div>

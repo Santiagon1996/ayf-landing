@@ -17,6 +17,7 @@ export const loginUserRequest = (userData) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ name, password }),
       });
     } catch (error) {

@@ -6,7 +6,7 @@ const SectionTitle = ({
   tituloFijo,
   tituloDinamico,
   colorFijo = "text-blue-950",
-  colorDinamico = "text-indigo-600",
+  colorDinamico = "text-blue-600",
   animationDelay = 0,
 }) => {
   return (

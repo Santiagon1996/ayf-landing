@@ -30,6 +30,7 @@ export const LoginForm = () => {
 
     if (hasAccessToken) {
       router.replace("/dashboard");
+      setCheckingCookie(true);
     } else {
       setCheckingCookie(false);
     }
@@ -54,16 +55,17 @@ export const LoginForm = () => {
     const isSuccess = await loginUser(formData);
 
     if (isSuccess) {
+      router.replace("/dashboard");
+      router.refresh();
+
       Swal.fire({
         icon: "success",
         title: "¡Éxito!",
-        text: "Bienvenido",
-        confirmButtonText: "OK",
-      }).then(() => {
-        setTimeout(() => {
-          router.replace("/dashboard");
-          router.refresh();
-        }, 100);
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
       });
       setFormData({ name: "", password: "" });
     } else {
