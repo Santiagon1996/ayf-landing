@@ -18,6 +18,7 @@ export function LogoutButton() {
         timer: 1500,
       });
       router.push("/");
+      router.refresh();
     } catch (err) {
       console.error(err);
       Swal.fire({

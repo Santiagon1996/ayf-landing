@@ -14,7 +14,7 @@ export const logoutUserRequest = async () => {
   try {
     response = await fetch("/api/admin/logout", {
       method: "POST",
-      credentials: "include", // Importante para que envíe la cookie y el servidor pueda borrarla
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

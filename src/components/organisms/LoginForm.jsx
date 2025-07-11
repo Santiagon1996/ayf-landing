@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Swal from "sweetalert2";
@@ -21,28 +21,6 @@ export const LoginForm = () => {
     name: "",
     password: "",
   });
-  const [checkingCookie, setCheckingCookie] = useState(true);
-
-  useEffect(() => {
-    const hasAccessToken =
-      typeof document !== "undefined" &&
-      document.cookie.includes("accessToken=");
-
-    if (hasAccessToken) {
-      router.replace("/dashboard");
-      setCheckingCookie(true);
-    } else {
-      setCheckingCookie(false);
-    }
-  }, [router]);
-
-  if (checkingCookie) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-xl text-gray-600">Cargando...</p>
-      </div>
-    );
-  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -55,9 +33,6 @@ export const LoginForm = () => {
     const isSuccess = await loginUser(formData);
 
     if (isSuccess) {
-      router.replace("/dashboard");
-      router.refresh();
-
       Swal.fire({
         icon: "success",
         title: "¡Éxito!",
@@ -67,6 +42,8 @@ export const LoginForm = () => {
         timer: 3000,
         timerProgressBar: true,
       });
+      window.location.href = "/dashboard";
+
       setFormData({ name: "", password: "" });
     } else {
       if (error) {

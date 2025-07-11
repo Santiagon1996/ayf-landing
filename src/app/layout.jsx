@@ -66,8 +66,6 @@ export const metadata = {
   // Favicon
   icons: {
     icon: "/AyF-Logo.png",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
   },
 };
 

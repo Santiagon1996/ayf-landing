@@ -1,13 +1,12 @@
-// app/dashboard/layout.jsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils"; // Utilidad de Shadcn para combinar clases de Tailwind
+import { cn } from "@/lib/utils";
 
 // Importa los componentes de Shadcn UI
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // Para un sidebar responsive
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,9 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogoutButton } from "@/components/atoms/LogoutButton";
-// Iconos (puedes usar Lucide React si lo tienes instalado con Shadcn)
-import { Menu } from "lucide-react"; // Instalar si no lo tienes: npm install lucide-react
-import { Toaster } from "sonner"; // Import Toaster from Sonner
+import { Menu } from "lucide-react";
+import { Toaster } from "sonner";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
@@ -31,7 +29,6 @@ export default function DashboardLayout({ children }) {
     { name: "Blogs", href: "/dashboard/blogs" },
   ];
 
-  // Componente de navegación del sidebar (extraído para reutilizarlo en Sheet y sidebar fijo)
   const SidebarNav = ({ isMobile = false, closeSheet }) => (
     <nav className={cn("flex flex-col", isMobile ? "px-2 pt-4" : "mt-6")}>
       <ul className="space-y-1">
