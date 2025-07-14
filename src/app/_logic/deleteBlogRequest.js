@@ -1,4 +1,5 @@
 import { validate, errors } from "shared";
+import { handleApiError } from "@/lib/handlers/handleApiError";
 
 const { SystemError, ValidateError } = errors;
 const { validateId } = validate;
@@ -34,17 +35,6 @@ export const deleteBlogRequest = async (blogId) => {
   }
 
   if (!response.ok) {
-    try {
-      body = await response.json();
-    } catch (error) {
-      throw new SystemError(
-        `Error al eliminar blog (status ${response.status})`,
-        error.message
-      );
-    }
-
-    const { error, message } = body;
-    const ErrorConstructor = errors[error];
-    throw new ErrorConstructor(message);
+    await handleApiError(response);
   }
 };

@@ -1,4 +1,5 @@
 import { errors } from "shared";
+import { handleApiError } from "@/lib/handlers/handleApiError";
 
 const { SystemError } = errors;
 
@@ -30,17 +31,6 @@ export const getBlogRequest = async () => {
   }
 
   if (!response.ok) {
-    try {
-      body = await response.json();
-    } catch (error) {
-      throw new SystemError(
-        "Errro al procesar la respuesta de los blogs",
-        error.message
-      );
-    }
-
-    const { error, message } = body;
-    const ErrorConstructor = errors[error];
-    throw new ErrorConstructor(message);
+    await handleApiError(response);
   }
 };

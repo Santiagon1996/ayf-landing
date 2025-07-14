@@ -1,4 +1,5 @@
 import { errors } from "shared";
+import { handleApiError } from "@/lib/handlers/handleApiError";
 
 const { SystemError } = errors;
 
@@ -41,27 +42,6 @@ export const getServiceRequest = async (type) => {
   }
 
   if (!response.ok) {
-    try {
-      body = await response.json();
-    } catch (error) {
-      throw new SystemError(
-        "Error al procesar la respuesta de los servicios",
-        error.message
-      );
-    }
-
-    const { error: errorType, message } = body; // Se renombra 'error' a 'errorType' para evitar conflictos
-    const ErrorConstructor = errors[errorType];
-
-    // Asegúrate de que el ErrorConstructor exista y sea una función antes de lanzarlo
-    if (ErrorConstructor && typeof ErrorConstructor === "function") {
-      throw new ErrorConstructor(message);
-    } else {
-      // Fallback para tipos de error desconocidos o faltantes desde el backend
-      throw new SystemError(
-        message || `Ocurrió un error desconocido (estado ${response.status}).`,
-        body // Pasa el cuerpo completo para depuración si es necesario
-      );
-    }
+    await handleApiError(response);
   }
 };

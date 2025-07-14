@@ -62,15 +62,15 @@ const serviceSchema = z.object({
     )
     .min(3, "El slug debe tener al menos 3 caracteres")
     .optional(), // <-- ¡IMPORTANTE! El slug es opcional en Zod si Mongoose lo auto-genera
-  type: z.enum(["juridico", "contable"], {
+  type: z.enum(["jurídico", "contable"], {
     errorMap: () => ({
       message:
-        "El tipo de servicio (jurídico/contable) es obligatorio y debe ser 'juridico' o 'contable'",
+        "El tipo de servicio (jurídico/contable) es obligatorio y debe ser 'jurídico' o 'contable'",
     }),
   }),
   category: z.enum(
     [
-      "asesoria-juridica",
+      "asesoria-jurídica",
       "area-contable-fiscal",
       "area-financiera",
       "servicios-complementarios",
@@ -115,7 +115,7 @@ const blogSchema = z.object({
     .max(200, "El título no puede exceder los 200 caracteres."),
 
   category: z
-    .enum(["juridico", "contable", "fiscal", "laboral", "noticias-generales"], {
+    .enum(["jurídico", "contable", "fiscal", "laboral", "noticias-generales"], {
       required_error: "La categoría es obligatoria.",
       invalid_type_error: 'La categoría "{VALUE}" no es válida.',
     })
@@ -175,15 +175,6 @@ const blogSchema = z.object({
     .default(() => new Date()), // Use a function for default date in Zod
 
   isPublished: z.boolean().default(false),
-
-  // iconUrl: z
-  //   .enum(ICON_NAMES, {
-  //     // Ahora valida que sea uno de los nombres de icono permitidos
-  //     required_error: "El icono es obligatorio.",
-  //     invalid_type_error: "El icono seleccionado no es válido.",
-  //   })
-  //   .optional()
-  //   .default("General"),
   viewsCount: z.number().int().min(0).default(0),
 });
 const updateBlogSchema = blogSchema.partial();

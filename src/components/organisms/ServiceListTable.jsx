@@ -19,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -37,11 +36,12 @@ import {
 import { ICON_OPTIONS, ICON_NAMES } from "../icons/icons.js";
 
 const CATEGORY_OPTIONS = [
-  "asesoria-juridica",
+  "asesoria-jurídica",
   "area-contable-fiscal",
   "area-financiera",
   "servicios-complementarios",
 ];
+const TYPE_OPTIONS = ["jurídico", "contable"];
 export const ServiceListTable = () => {
   const {
     data: services,
@@ -84,6 +84,12 @@ export const ServiceListTable = () => {
   const handleCategoryChange = useCallback((value) => {
     setFormState((prev) => ({ ...prev, category: value }));
   }, []);
+
+  // Manejador específico para el Select de Type
+  const handleTypeChange = useCallback((value) => {
+    setFormState((prev) => ({ ...prev, type: value }));
+  }, []);
+
   //Manejo de detalles
   const handleAddDetail = useCallback(() => {
     if (detailsInput.trim() !== "") {
@@ -152,25 +158,33 @@ export const ServiceListTable = () => {
       }
     }
 
-    let success;
-    if (currentService) {
-      success = await updateService(dataToSend, currentService.id);
-    } else {
-      success = await createService(dataToSend);
-    }
+    try {
+      let success;
+      if (currentService) {
+        success = await updateService(dataToSend, currentService.id);
+      } else {
+        success = await createService(dataToSend);
+      }
 
-    // Lógica de toast unificada
-    const title = success ? "Éxito" : "Error";
-    const description = success
-      ? `Servicio ${currentService ? "actualizado" : "creado"} con éxito.`
-      : `Error al ${currentService ? "actualizar" : "crear"} el servicio.`;
+      // Lógica de toast unificada
+      const title = success ? "Éxito" : "Error";
+      const description = success
+        ? `Servicio ${currentService ? "actualizado" : "creado"} con éxito.`
+        : `Error al ${currentService ? "actualizar" : "crear"} el servicio.`;
 
-    if (success) {
-      toast.success(description, { title });
-      setIsDialogOpen(false); // Cierra el diálogo solo en caso de éxito
-    } else {
-      toast.error(description, { title });
-      // Los errores de validación ya se muestran en el Dialog por `validationErrors`
+      if (success) {
+        toast.success(description, { title });
+        setIsDialogOpen(false); // Cierra el diálogo solo en caso de éxito
+      } else {
+        toast.error(description, { title });
+        // Los errores de validación ya se muestran en el Dialog por `validationErrors`
+      }
+    } catch (err) {
+      console.error("Error inesperado al enviar el blog:", err);
+      toast.error("Error inesperado al enviar el formulario.", {
+        title: "Error",
+      });
+      setError("Ocurrió un error inesperado. Revisa la consola.");
     }
   };
   // Manejador para abrir el diálogo de confirmación de eliminación
@@ -309,16 +323,22 @@ export const ServiceListTable = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="type" className="text-right">
-                Tipo Juridico o Contable
+              <Label htmlFor="category" className="text-right">
+                Tipo
               </Label>
-              <Input
-                id="type"
-                value={formState.type}
-                onChange={handleChange}
-                className="col-span-3"
-                required
-              />
+              <Select value={formState.type} onValueChange={handleTypeChange}>
+                <SelectTrigger id="category" className="col-span-3">
+                  <SelectValue placeholder="Selecciona un Tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TYPE_OPTIONS.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option.charAt(0).toUpperCase() +
+                        option.slice(1).replace("-", " ")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">

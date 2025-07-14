@@ -38,7 +38,7 @@ const AboutUs = () => {
         {/* Sección de Texto */}
         <div className="space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-50">
-            ¿Quienes somos, y por que elegirnos?
+            Quiénes somos, y por qué elegirnos?
           </h1>
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
             Somos Vale y Sofi. Después de años de formación y experiencia

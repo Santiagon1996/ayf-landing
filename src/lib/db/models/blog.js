@@ -17,7 +17,7 @@ const blogSchema = new Schema(
       required: [true, "La categoría es obligatoria."],
       enum: {
         values: [
-          "juridico",
+          "jurídico",
           "contable",
           "fiscal",
           "laboral",
@@ -59,12 +59,7 @@ const blogSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    // iconUrl: {
-    //   type: String,
-    //   enum: ICON_NAMES, // Asegura que solo se guarden nombres de iconos válidos
-    //   default: "General", // Establece un icono por defecto de tu lista
-    //   required: [true, "El icono del servicio es obligatorio"], // Podrías hacerlo requerido si siempre debe tener uno
-    // },
+
     viewsCount: {
       type: Number,
       default: 0,

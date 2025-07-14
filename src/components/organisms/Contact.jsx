@@ -31,7 +31,7 @@ const SeccionContacto = () => {
     <div className="relative flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-50 to-indigo-100 p-6 overflow-hidden">
       {/* Molécula: Título Hero */}
       <TitleContact
-        titulo="¿Listo para **asesorarte** con nosotros?"
+        titulo="¿Listo para asesorarte con nosotros?"
         palabraDestacada="asesorarte"
         retrasoAnimacion={4.5}
       />

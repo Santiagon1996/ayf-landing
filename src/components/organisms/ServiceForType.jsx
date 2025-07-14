@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 
 // --- Datos de la persona a cargo (mantener aquí ya que son específicos de este organismo) ---
 const personasACargo = {
-  juridico: {
+  jurídico: {
     nombre: "Sofia",
     imagenUrl: "/picturePN2.jpg",
     descripcion:
@@ -115,7 +115,7 @@ const SeccionServiciosPorTipo = ({ type }) => {
       <div className="text-center py-16 text-red-600 font-semibold text-lg">
         <p>
           Error al cargar los servicios{" "}
-          {type === "juridico" ? "jurídicos" : "contables"}.
+          {type === "jurídico" ? "jurídicos" : "contables"}.
         </p>
         <p>Por favor, inténtelo de nuevo más tarde. ({error.message})</p>
       </div>
@@ -149,7 +149,7 @@ const SeccionServiciosPorTipo = ({ type }) => {
       {/* Molécula: SectionTitle */}
       <SectionTitle
         tituloFijo="Nuestros Servicios"
-        tituloDinamico={type === "juridico" ? "Jurídicos" : "Contables"}
+        tituloDinamico={type === "jurídico" ? "Jurídicos" : "Contables"}
         animationDelay={0.4}
       />
 

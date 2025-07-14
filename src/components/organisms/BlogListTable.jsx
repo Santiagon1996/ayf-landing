@@ -19,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -34,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ICON_OPTIONS, ICON_NAMES } from "../icons/icons.js";
 
 const CATEGORY_OPTIONS = [
   "juridico",
@@ -64,7 +62,6 @@ export const BlogListTable = () => {
     description: "",
     content: "",
     author: "",
-    iconUrl: "",
     viewsCount: 0,
   });
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
@@ -97,8 +94,7 @@ export const BlogListTable = () => {
       description: "",
       content: "",
       author: "",
-      //iconUrl: "",
-      viewsCount: 0, // Resetear viewsCount
+      viewsCount: 0,
     });
     setIsDialogOpen(true);
     setError(null);
@@ -114,7 +110,6 @@ export const BlogListTable = () => {
         description: blog.description || "",
         content: blog.content || "",
         author: blog.author || "",
-        // iconUrl: blog.iconUrl || "",
         viewsCount: blog.viewsCount || 0,
       });
       setIsDialogOpen(true);
@@ -143,24 +138,32 @@ export const BlogListTable = () => {
       }
     }
 
-    let success;
-    if (currentBlog) {
-      success = await updateBlog(currentBlog.id, dataToSend);
-    } else {
-      success = await createBlog(dataToSend);
-    }
+    try {
+      let success;
+      if (currentBlog) {
+        success = await updateBlog(currentBlog.id, dataToSend);
+      } else {
+        success = await createBlog(dataToSend);
+      }
 
-    const title = success ? "Éxito" : "Error";
-    const description = success
-      ? `Blog ${currentBlog ? "actualizado" : "creado"} con éxito.`
-      : `Error al ${currentBlog ? "actualizar" : "crear"} el blog.`;
+      const title = success ? "Éxito" : "Error";
+      const description = success
+        ? `Blog ${currentBlog ? "actualizado" : "creado"} con éxito.`
+        : `Error al ${currentBlog ? "actualizar" : "crear"} el blog.`;
 
-    if (success) {
-      toast.success(description, { title });
-      setIsDialogOpen(false); // Cierra el diálogo solo en caso de éxito
-    } else {
-      toast.error(description, { title });
-      // Los errores de validación ya se muestran en el Dialog por `validationErrors`
+      if (success) {
+        toast.success(description, { title });
+        setIsDialogOpen(false); // Cierra el diálogo solo en caso de éxito
+      } else {
+        toast.error(description, { title });
+        // Los errores de validación ya se muestran en el Dialog por `validationErrors`
+      }
+    } catch (err) {
+      console.error("Error inesperado al enviar el blog:", err);
+      toast.error("Error inesperado al enviar el formulario.", {
+        title: "Error",
+      });
+      setError("Ocurrió un error inesperado. Revisa la consola.");
     }
   };
 

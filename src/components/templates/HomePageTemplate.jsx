@@ -30,7 +30,7 @@ const HomePageTemplate = () => {
           <h1 className="text-4xl font-extrabold text-center mb-12 text-blue-950">
             Area Jurídica
           </h1>
-          <ServiceForType type="juridico" />
+          <ServiceForType type="jurídico" />
         </div>
 
         <Separator className="my-16" />

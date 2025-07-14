@@ -7,7 +7,6 @@ import {
   getBlogByIdRequest,
 } from "@/app/_logic/index";
 import { errors } from "shared";
-import Swal from "sweetalert2";
 
 const { ValidateError, NotFoundError, SystemError } = errors;
 
@@ -122,41 +121,6 @@ export const useBlog = () => {
     },
     [fetchData, setError]
   );
-
-  // Este useEffect es donde se manejan los errores para SweetAlert
-  useEffect(() => {
-    if (error) {
-      let errorMessage = "Ocurrió un error inesperado.";
-      let errorDetails = null; // Para guardar los detalles de validación
-
-      if (error instanceof ValidateError) {
-        errorMessage = error.message || "Error de validación.";
-        errorDetails = error.details; // Captura los detalles del ValidateError
-
-        if (errorDetails && errorDetails.length > 0) {
-          // Construye un mensaje más detallado para el SweetAlert
-          errorMessage += "\n\nDetalles:";
-          errorDetails.forEach((detail) => {
-            errorMessage += `\n- ${detail.field}: ${detail.message}`;
-          });
-        }
-      } else if (error instanceof NotFoundError) {
-        errorMessage = error.message || "Recurso no encontrado.";
-      } else if (error instanceof SystemError) {
-        errorMessage = error.message || "Error interno del sistema.";
-      }
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage, // Aquí se muestra el mensaje detallado
-        confirmButtonText: "OK",
-        customClass: {
-          popup: "text-left", // Alinea el texto a la izquierda si tiene detalles
-        },
-      });
-      setError(null); // Limpia el error después de mostrarlo para evitar bucles
-    }
-  }, [error, setError]);
 
   return {
     data,

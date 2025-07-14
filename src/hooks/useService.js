@@ -1,23 +1,23 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   getServiceRequest,
   createServiceRequest,
   updateServiceRequest,
   deleteServiceRequest,
   getServiceByIdRequest,
-} from "@/app/_logic/index.js"; // Asegúrate que esta ruta es correcta
+} from "@/app/_logic/index.js";
 import { errors } from "shared";
-import Swal from "sweetalert2";
 
 export const useServices = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
-  // Función para obtener todos los servicios
+
+  // Obtener todos los servicios
   const fetchData = useCallback(async (type) => {
     setLoading(true);
-    +setError(null);
+    setError(null);
     try {
       const result = await getServiceRequest(type);
       setData(result || []);
@@ -30,7 +30,8 @@ export const useServices = () => {
       setLoading(false);
     }
   }, []);
-  // Función para obtener un servicio por ID
+
+  // Obtener servicio por ID
   const fetchServiceById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
@@ -46,7 +47,7 @@ export const useServices = () => {
     }
   }, []);
 
-  // Función para crear un servicio
+  // Crear servicio
   const createService = useCallback(
     async (serviceData) => {
       setLoading(true);
@@ -54,25 +55,31 @@ export const useServices = () => {
       setValidationErrors({});
       try {
         await createServiceRequest(serviceData);
-        await fetchData(); // Refresca la lista de servicios después de crear
+        await fetchData(); // Recarga servicios
         return true;
       } catch (err) {
         console.error("Error creating service:", err);
 
         if (err instanceof errors.ValidateError) {
-          setValidationErrors(err.details || {});
+          setValidationErrors(
+            Array.isArray(err.details)
+              ? Object.fromEntries(err.details.map((d) => [d.field, d.message]))
+              : err.details
+          );
           setError("Error de validación al crear servicio.");
         } else {
           setError(err.message || "Error al crear el servicio.");
         }
-        return false; // Indica fallo
+
+        return false;
       } finally {
         setLoading(false);
       }
     },
-    [fetchData, setError, setValidationErrors]
+    [fetchData]
   );
-  // Función para actualizar un servicio
+
+  // Actualizar servicio
   const updateService = useCallback(
     async (serviceId, updatesData) => {
       setLoading(true);
@@ -84,21 +91,27 @@ export const useServices = () => {
         return true;
       } catch (err) {
         console.error("Error updating service:", err);
+
         if (err instanceof errors.ValidateError) {
-          setValidationErrors(err.details || {});
+          setValidationErrors(
+            Array.isArray(err.details)
+              ? Object.fromEntries(err.details.map((d) => [d.field, d.message]))
+              : err.details
+          );
           setError("Error de validación al actualizar servicio.");
         } else {
           setError(err.message || "Error al actualizar el servicio.");
         }
+
         return false;
       } finally {
         setLoading(false);
       }
     },
-    [fetchData, setError, setValidationErrors]
+    [fetchData]
   );
 
-  // Función para eliminar un servicio
+  // Eliminar servicio
   const deleteService = useCallback(
     async (serviceId) => {
       setLoading(true);
@@ -109,58 +122,14 @@ export const useServices = () => {
         return true;
       } catch (err) {
         console.error("Error deleting service:", err);
-        setError(
-          err.message || String(err) || "Error al eliminar el servicio."
-        );
+        setError(err.message || "Error al eliminar el servicio.");
         return false;
       } finally {
         setLoading(false);
       }
     },
-    [fetchData, setError]
+    [fetchData]
   );
-
-  // Este useEffect es donde se manejan los errores para SweetAlert
-  useEffect(() => {
-    if (error) {
-      let errorMessage = "Ocurrió un error inesperado.";
-      let errorDetails = null; // Para guardar los detalles de validación
-
-      if (error instanceof errors.ValidateError) {
-        errorMessage = error.message || "Error de validación.";
-        errorDetails = error.details; // Captura los detalles del ValidateError
-
-        if (errorDetails && errorDetails.length > 0) {
-          // Construye un mensaje más detallado para el SweetAlert
-          errorMessage += "\n\nDetalles:";
-          errorDetails.forEach((detail) => {
-            errorMessage += `\n- ${detail.field}: ${detail.message}`;
-          });
-        }
-      } else if (error instanceof errors.NotFoundError) {
-        errorMessage = error.message || "Recurso no encontrado.";
-      } else if (error instanceof errors.SystemError) {
-        errorMessage = error.message || "Error interno del sistema.";
-      } else {
-        // Fallback para cualquier otro tipo de error de JS
-        errorMessage = `Error: ${
-          error.message || "Mensaje de error no disponible."
-        }`;
-      }
-
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage, // Aquí se muestra el mensaje detallado
-        confirmButtonText: "OK",
-        customClass: {
-          // Puedes añadir estilos CSS para mejorar la legibilidad si el texto es largo
-          popup: "text-left", // Alinea el texto a la izquierda si tiene detalles
-        },
-      });
-      setError(null); // Limpia el error después de mostrarlo para evitar bucles
-    }
-  }, [error, setError]);
 
   return {
     data,
@@ -172,6 +141,6 @@ export const useServices = () => {
     createService,
     updateService,
     deleteService,
-    setError, // Para permitir limpiar errores desde el componente
+    setError,
   };
 };

@@ -109,12 +109,12 @@ export const LoginForm = () => {
       </div>
 
       {/* Link to Login page */}
-      <p className="text-center text-sm text-gray-600">
+      {/* <p className="text-center text-sm text-gray-600">
         ¿No tienes cuenta?{" "}
         <Link href="/register" className="text-blue-600 hover:underline">
           Registrate
         </Link>
-      </p>
+      </p> */}
 
       {/* Submit Button */}
       <Button type="submit" disabled={loading} className="w-full">

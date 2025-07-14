@@ -20,7 +20,7 @@ const serviceSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["juridico", "contable"],
+      enum: ["jurídico", "contable"],
       required: [
         true,
         "El tipo de servicio (jurídico/contable) es obligatorio",
@@ -29,7 +29,7 @@ const serviceSchema = new Schema(
     category: {
       type: String,
       enum: [
-        "asesoria-juridica",
+        "asesoria-jurídica",
         "area-contable-fiscal",
         "area-financiera",
         "servicios-complementarios",

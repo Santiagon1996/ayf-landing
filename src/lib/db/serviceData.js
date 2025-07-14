@@ -1,11 +1,11 @@
 // src/db/data/servicesData.js
 
 const services = [
-  // 1. Asesoría jurídica (Category: "asesoria-juridica")
+  // 1. Asesoría jurídica (Category: "asesoria-jurídica")
   {
     name: "Derecho Societario",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Asesoramiento integral en constitución, reformas y gestión de sociedades.",
     fullDescription:
@@ -22,8 +22,8 @@ const services = [
   },
   {
     name: "Contratos Comerciales",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Redacción, análisis y revisión de contratos para sus operaciones comerciales.",
     fullDescription:
@@ -37,8 +37,8 @@ const services = [
   },
   {
     name: "Derecho Laboral",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Asesoramiento en contratos laborales, desvinculación y acuerdos con terceros.",
     fullDescription:
@@ -52,8 +52,8 @@ const services = [
   },
   {
     name: "Derecho Digital",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Protección de activos digitales, datos personales y contratos electrónicos.",
     fullDescription:
@@ -69,12 +69,12 @@ const services = [
   },
   {
     name: "Derecho Laboral Empresarial",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Gestión de personal, auditorías y defensa ante organismos laborales.",
     fullDescription:
-      "Asesoramiento completo en la gestión de personal, desde altas y bajas, hasta auditorías laborales preventivas para asegurar el cumplimiento normativo. Brindamos asistencia en conflictos individuales o colectivos y representamos a su empresa en defensa ante intimaciones de AFIP, Ministerio de Trabajo o sindicatos, buscando soluciones eficaces y minimizando riesgos.",
+      "Asesoramiento completo en la gestión de personal, desde altas y bajas, hasta auditorías laborales preventivas para asegurar el cumplimiento normativo. Brindamos asistencia en conflictos individuales o colectivos y representamos a su empresa en defensa ante intimaciones de ARCA, Ministerio de Trabajo o sindicatos, buscando soluciones eficaces y minimizando riesgos.",
     details: [
       "Altas y bajas de personal",
       "Auditorías laborales preventivas",
@@ -86,8 +86,8 @@ const services = [
   },
   {
     name: "Cumplimiento Normativo (Compliance)",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Asesoramiento básico en las obligaciones legales mínimas para su negocio.",
     fullDescription:
@@ -100,8 +100,8 @@ const services = [
   },
   {
     name: "Representación y Reclamos Legales",
-    type: "juridico",
-    category: "asesoria-juridica",
+    type: "jurídico",
+    category: "asesoria-jurídica",
     shortDescription:
       "Gestión de comunicaciones legales, acuerdos y mediaciones prejudiciales.",
     fullDescription:
@@ -183,7 +183,7 @@ const services = [
   },
   {
     name: "Detección de Riesgos",
-    type: "juridico",
+    type: "jurídico",
     category: "area-financiera",
     shortDescription:
       "Identificación de riesgos contractuales y legales en sus operaciones diarias.",
