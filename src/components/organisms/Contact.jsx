@@ -8,10 +8,20 @@ const SeccionContacto = () => {
   const emailAddress = "contacto@ayfasociados.com";
   const subject = "Consulta desde el sitio web";
 
+  // const handleContactClick = () => {
+  //   window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(
+  //     subject
+  //   )}`;
+  // };
   const handleContactClick = () => {
-    window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(
+    const email = "contacto@ayfasociados.com";
+    const subject = "Consulta desde el sitio web";
+    const body = "Hola, quiero hacer una consulta sobre...";
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
       subject
-    )}`;
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.open(gmailUrl, "_blank");
   };
 
   // Variantes para el botón
