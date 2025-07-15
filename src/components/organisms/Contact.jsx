@@ -5,8 +5,9 @@ import ButtonContact from "@/components/atoms/ButtonContact";
 import TitleContact from "@/components/molecules/TitleContact";
 
 const SeccionContacto = () => {
-  const emailAddress = "contacto@ayfasociados.com";
+  const email = "contacto@ayfasociados.com";
   const subject = "Consulta desde el sitio web";
+  const body = "Hola, quiero hacer una consulta sobre...";
 
   // const handleContactClick = () => {
   //   window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(
@@ -14,14 +15,20 @@ const SeccionContacto = () => {
   //   )}`;
   // };
   const handleContactClick = () => {
-    const email = "contacto@ayfasociados.com";
-    const subject = "Consulta desde el sitio web";
-    const body = "Hola, quiero hacer una consulta sobre...";
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-    window.open(gmailUrl, "_blank");
+    if (isMobile) {
+      // mobile: abrir cliente mail nativo
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+    } else {
+      // Abrir Gmail web para desk
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+      window.open(gmailUrl, "_blank");
+    }
   };
 
   // Variantes para el botón
