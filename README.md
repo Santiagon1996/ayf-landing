@@ -1,4 +1,4 @@
-# Proyecto: Estudio Jurídico Contable [Nombre del Estudio]
+# Proyecto: Estudio Jurídico Contable [AyF]
 
 ## Índice
 
@@ -94,13 +94,12 @@ La landing page está dirigida a:
 - **HTML5:** Estructura de la página.
 - **CSS3:** Estilos y diseño.
 - **JavaScript:** Interactividad (validación de formularios, animaciones sutiles, etc.).
-- **Framework CSS (ej. Bootstrap o Tailwind CSS):** Para un desarrollo responsive y rápido (a definir).
-- **Herramientas de construcción (opcional):** Next.js
+- **Framework CSS ( Tailwind CSS):** Para un desarrollo responsive y rápido.
+- **Herramientas de construcción:** Next.js
 
 ### **Backend (para formulario de contacto y futuras novedades)**
 
 - **Node.js /NEXT API:** Para manejar el envío de formularios y la lógica del servidor (si se requiere almacenamiento de novedades).
-- **Servicio de envío de emails (ej. Nodemailer para Node.js, SendGrid, EmailJS):** Para recibir los mensajes del formulario de contacto.
 
 ---
 
@@ -115,6 +114,8 @@ La landing page está dirigida a:
 3.  **Formulario de Contacto Funcional:** Envío de mensajes directo al email del estudio.
 4.  **Optimización SEO Básica:** Meta-etiquetas, descripciones y estructura de contenido para mejor visibilidad en buscadores.
 5.  **Animaciones Sutiles:** Para mejorar la experiencia de usuario sin distraer.
+6. **Dashboard Admin:** Para manejar el CRUD de los servicios y novedades.
+
 
 ---
 
@@ -146,15 +147,6 @@ Este proyecto está bajo la Licencia [Insertar Tipo de Licencia, ej. MIT]. Para 
 
 ---
 
-### Recomendaciones Adicionales para la Página:
-
-1.  **Testimonios de Clientes:** Un carrusel o sección con testimonios de clientes satisfechos. Esto añade una gran dosis de credibilidad y confianza.
-2.  **Preguntas Frecuentes (FAQ):** Una sección donde respondas a las dudas más comunes sobre los servicios o el proceso de contratación. Reduce la carga de consultas y educa al visitante.
-3.  **Blog o Artículos:** Como mencioné en las secciones, un blog no solo ayuda al SEO, sino que posiciona al estudio como un referente en su campo, compartiendo conocimientos y actualizaciones relevantes.
-4.  **Iconografía Sutil:** Utiliza íconos minimalistas y profesionales para representar servicios o características, lo que facilita la lectura y la comprensión visual.
-5.  **Formulario de Contacto Dirigido:** En el formulario de contacto, puedes añadir un campo de "Motivo de la consulta" (con opciones como "Asesoramiento Jurídico", "Asesoramiento Contable", "Consulta General", etc.) para ayudar a filtrar y dirigir las consultas.
-6.  **"¿Por qué elegirnos?":** Una pequeña sección que destaque los valores del estudio, su enfoque personal, la experiencia combinada de las socias, o cualquier diferenciador clave.
-    This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
