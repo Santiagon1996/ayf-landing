@@ -1,16 +1,7 @@
-import { Geist, Geist_Mono, EB_Garamond, Inter, Lora } from "next/font/google";
+import { EB_Garamond, Inter, Lora } from "next/font/google";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 // Configuración de EB Garamond para los títulos
 const ebGaramond = EB_Garamond({
   subsets: ["latin"],
@@ -39,7 +30,7 @@ export const metadata = {
   },
   // Descripción concisa y relevante para SEO
   description:
-    "AyF Asociados ofrece servicios jurídicos y contables integrales en Barcelona. Asesoramiento legal experto y gestión contable eficiente para empresas y particulares. Tu aliado en derecho y finanzas.",
+    "AyF Asociados ofrece servicios jurídicos y contables integrales en Rosario. Asesoramiento legal experto y gestión contable eficiente para empresas y particulares. Tu aliado en derecho y finanzas.",
   // Palabras clave para ayudar a los motores de búsqueda (opcional, pero útil)
   keywords: [
     "estudio jurídico contable",
