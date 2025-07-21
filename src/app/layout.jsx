@@ -63,6 +63,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
+      <head>
+        <meta
+          name="google-site-verification"
+          content="MCGbvJ7D7oOafzvnhDx3NKT9u3CAADyEDw6e3qhvHRI"
+        />
+      </head>
       <body
         className={`${ebGaramond.variable} ${inter.variable} ${lora.variable} antialiased`}
       >
